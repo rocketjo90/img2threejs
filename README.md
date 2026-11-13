@@ -1,3 +1,8 @@
+> **Windows compatibility fork:** this repository adds Windows fixes to
+> [img2threejs/img2threejs](https://github.com/img2threejs/img2threejs), based on v2.0.1.
+> Start with the [Windows installation guide](docs/WINDOWS.md) to install this fork.
+> The upstream npm commands below still install the original project.
+
 <div align="center">
 
 <img src="assets/logo.svg" width="112" height="104" alt="img2threejs logo" />

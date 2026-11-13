@@ -160,6 +160,11 @@ def run_bounded(
     target_kind: str,
 ) -> subprocess.CompletedProcess:
     env = _bounded_env(declared_env)
+    # Windows commonly exposes Python through `py`, without a `python3` executable.
+    # Reuse the interpreter running this tool for the portable manifest command;
+    # explicit interpreter paths and all other commands retain their meaning.
+    if os.name == "nt" and argv and argv[0] == "python3":
+        argv = [sys.executable, *argv[1:]]
     try:
         proc = subprocess.run(
             argv,
