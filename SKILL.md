@@ -113,8 +113,8 @@ python3 forge/state.py mark <step-id> --state .img2threejs/state.json --evidence
 ## Required Inputs
 
 - one image path / screenshot / URL / attached image (if missing or unreadable, ask)
-- intended use: prop, game object, hero render, playable/destructible object, animation rig
-  (default: real-time browser prop with interactive performance)
+- Ask unanswered [intake questions](grimoire/intake/reference_planning.md#task-intake) about use,
+  style, constraints, and appearance staging before modeling; do not assume browser-only delivery.
 - when a domain plugin serves the item, whatever authoritative record its intake step requires, or
   an explicit request for the user/vision provider to supply one; heuristic detection alone is not
   enough to select a geometry adapter

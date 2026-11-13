@@ -47,6 +47,12 @@ never drops below the **9** floor whatever a plugin proposes.
 
 Before generating code, define exactly what makes the model good enough:
 
+Use the answers from [task intake](reference_planning.md#task-intake) to set intended use,
+style, physical or runtime constraints, appearance scope, and review checkpoints. Record
+destination-specific acceptance criteria separately when more than one output is requested.
+Do not treat deliberate low-poly styling as a defect or a plain shape preview as a finished
+textured reconstruction. Triangle count alone is not an accuracy or printability score.
+
 - definition of done for this object
 - minimum macro, meso, and micro feature counts
 - required repeated systems and their distribution rules

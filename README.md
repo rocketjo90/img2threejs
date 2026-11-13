@@ -3,7 +3,8 @@
 > Start with the [Windows installation guide](docs/WINDOWS.md) to install this fork.
 > Reconstructions default to a polished, responsive viewer and standalone HTML delivery:
 > see the [showcase approach and reusable starter](grimoire/build/showcase_viewer.md).
-> [Reference planning](grimoire/intake/reference_planning.md) covers source organization,
+> [Task intake and reference planning](grimoire/intake/reference_planning.md) cover destination,
+> style, detail constraints, appearance staging, source organization,
 > early camera/proportion checks, and observed versus inferred details for any 2D input.
 > The upstream npm commands below still install the original project.
 

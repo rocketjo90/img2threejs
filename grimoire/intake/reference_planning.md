@@ -6,6 +6,77 @@ photos, screenshots, scanned drawings, sketches, illustrations, diagrams, and ot
 sources. A reference may depict an imagined or stylized subject; reconstruct its intended
 design without silently replacing it with a physically realistic interpretation.
 
+## Task intake
+
+At the start of a new reconstruction, establish the following before committing to geometry
+or a delivery format. Reuse answers already supplied in the request or conversation. Ask
+only missing questions, grouped briefly in plain language; allow multiple intended uses.
+Inspect references while waiting, but do not silently choose an unanswered intended use.
+
+1. **Use and delivery:** Is this for a game/real-time viewer, a Blender scene, 3D printing,
+   or another destination? Is it static, animated, functional, or decorative? What editable
+   source or export is needed? Confirm export support before promising a format.
+2. **Style:** Should it faithfully preserve rounded forms and visible details, be simplified,
+   or be deliberately low-poly/faceted? The reference or an explicit style request can
+   already answer this. Destination and style are separate choices: a printed low-poly
+   design keeps its intentional facets; a curved object keeps its intended curves.
+3. **Relevant constraints:** For a game, ask about target device/engine, viewing distance,
+   and any supplied performance budget. For Blender, establish background versus close-up
+   use and editing/animation needs. For printing, establish physical size/units, printer or
+   process if known, and whether parts must fit, move, or separate. Do not require users
+   to invent technical numbers; propose a reasoned budget after these answers. Label
+   unknown constraints and identify which final checks depend on resolving them.
+4. **Appearance and review:** Offer geometry-only, geometry review before appearance, or
+   a fully finished result. Distinguish plain clay, simple colors/material properties,
+   and image/procedural textures. Do not assume every task needs textures or that every
+   user wants an approval stop. An explicit finished-output request already authorizes
+   appearance work unless the user also requests an intermediate review.
+
+Record the answers compactly in the project notes and use them to define the quality
+contract. If the user delegates a choice, state the chosen assumption and proceed. Revisit
+only choices affected by a changed destination, scale, or style.
+
+### Choose refinement for the destination
+
+Set an explicit triangle target in the existing `performanceBudget.targetTriangles` field
+for runtime-oriented outputs, based on the agreed use and complexity. It is a tessellation
+input, not a guaranteed final count: measure the built geometry, repeated instances, and
+draw calls. Spend triangles on silhouette, curvature, and deformation where they matter.
+Do not inflate counts to meet an arbitrary minimum or smooth away intentional facets.
+
+For Blender, prioritize the agreed editing needs, hierarchy, scale, and appearance at the
+intended camera distance; a densely triangulated export is not automatically an editable
+model. Verify the actual exported/imported result in the destination when available.
+
+For printing, select mesh refinement from physical size, curvature fidelity, and the
+chosen process's capabilities rather than automatically choosing the largest triangle
+count. Inspect exported curves and feature sizes; shading smoothness on screen is not
+evidence of a smooth printable mesh. Check units, closed/manifold solids as appropriate,
+intersections, wall thickness, and required clearances, then review the slicer result.
+Texture or normal-map detail alone does not create printable relief: requested physical
+features must be geometry. Printer unknown means printer-specific suitability remains
+unverified. See [Autodesk's mesh refinement guidance](https://files.upskill-dev.autodesk.com/public/fusion360-intro-design-manufacturing-associate/210715_SbS_L1-07_Export-an-STL-file.pdf)
+and [Blender's print inspection tools](https://extensions.blender.org/add-ons/print3d-toolbox/).
+
+For multiple uses, keep a shared procedural source and derive destination-specific variants
+with separate checks. A browser preview supports inspection; it does not replace the
+requested game asset, Blender deliverable, or printable file. Existing export/profile
+contracts still govern supported conversions; these intake instructions add no exporters.
+
+### When geometry-first review is selected
+
+Provide a plain-material preview with proportions, shape details, and multiple views before
+costly surface work. Preserve the source, spec, cameras, assumptions, and pending tasks.
+If the user requested approval at this point, wait for their shape feedback before textures;
+do not treat elapsed time as approval. Resume the saved model rather than rebuilding it.
+
+Plan later surface requirements without generating textures prematurely. A shape preview
+is an intermediate result, not full material fidelity or completed pipeline evidence. Keep
+deferred work pending; never mark a required appearance gate passed or globally inapplicable
+just to reach the checkpoint. If the current tooling cannot advance without that work,
+retain its blocked status and explain the limitation. Geometry-only delivery must be scoped
+and labeled honestly. No texture is needed merely to finish an otherwise accepted print mesh.
+
 ## 1. Organize the supplied evidence
 
 Inspect the available sources and make a compact index in the project's analysis notes.
