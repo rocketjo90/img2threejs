@@ -224,9 +224,10 @@ test('a dangling host link is replaced', () => {
   fs.mkdirSync(skills(dir), { recursive: true })
   const missing = path.join(dir, 'deleted-checkout')
   fs.symlinkSync(missing, path.join(skills(dir), 'img2threejs'), directoryLinkType)
+  const originalTarget = fs.readlinkSync(path.join(skills(dir), 'img2threejs'))
   const result = run(dir, 'install')
   success(result)
-  assert.ok(result.stdout.includes(`replaced dangling link ${path.join(skills(dir), 'img2threejs')} (was -> ${missing})`))
+  assert.ok(result.stdout.includes(`replaced dangling link ${path.join(skills(dir), 'img2threejs')} (was -> ${originalTarget})`))
   assert.equal(path.basename(path.dirname(installed(dir))), commits['2.0.0'])
 })
 
@@ -239,11 +240,12 @@ test('an unmanaged link to a skill checkout names both ways forward', () => {
   fs.mkdirSync(skills(dir), { recursive: true })
   const link = path.join(skills(dir), 'img2threejs')
   fs.symlinkSync(checkout, link, directoryLinkType)
+  const originalTarget = fs.readlinkSync(link)
   const result = run(dir, 'install')
   assert.equal(result.status, 2)
   assert.ok(result.stderr.includes(`git -C ${link} pull --ff-only`), result.stderr)
   assert.match(result.stderr, /move the link and re-run/)
-  assert.equal(fs.readlinkSync(link), checkout)
+  assert.equal(fs.readlinkSync(link), originalTarget)
 })
 
 test('explicit host installs the full pinned skill without linking other hosts', () => {
@@ -304,10 +306,11 @@ test('unmanaged directories and symlinks are preserved; no hosts partially insta
       fs.mkdirSync(path.join(dir, 'elsewhere'))
       fs.symlinkSync(path.join(dir, 'elsewhere'), link, directoryLinkType)
     }
+    const originalTarget = kind === 'symlink' ? fs.readlinkSync(link) : null
     assert.equal(run(dir, 'install').status, 2)
     assert.ok(!fs.existsSync(skills(dir)))
     if (kind === 'directory') assert.equal(fs.readFileSync(path.join(link, 'keep'), 'utf8'), 'user data')
-    else assert.equal(fs.readlinkSync(link), path.join(dir, 'elsewhere'))
+    else assert.equal(fs.readlinkSync(link), originalTarget)
     assert.ok(!fs.existsSync(path.join(dir, '.img2threejs')))
   }
 })
