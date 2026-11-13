@@ -1,6 +1,8 @@
-> **Windows compatibility fork:** this repository adds Windows fixes to
+> **Windows + interactive showcase fork:** this repository adds Windows fixes to
 > [img2threejs/img2threejs](https://github.com/img2threejs/img2threejs), based on v2.0.1.
 > Start with the [Windows installation guide](docs/WINDOWS.md) to install this fork.
+> Reconstructions default to a polished, responsive viewer and standalone HTML delivery:
+> see the [showcase approach and reusable starter](grimoire/build/showcase_viewer.md).
 > The upstream npm commands below still install the original project.
 
 <div align="center">

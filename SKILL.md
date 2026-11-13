@@ -17,9 +17,8 @@ subsequently be *exported* to; an explicitly-selected emission target (`--target
 terminal, whole-artifact transform of the already-built model, verified to its own stated limit,
 never a second way to build one.
 
-Agent-agnostic: works under Hermes, Claude Code, Codex, or OpenCode. Wherever this doc says "agent vision" or "agent browser tool", use
-whatever the host provides — native image reading, a browser MCP (playwright/chrome-devtools), the
-project preview, or a user-supplied screenshot.
+Agent-agnostic: use the host's image reader, browser tools, project preview, or user-supplied
+screenshots wherever this document says "agent vision" or "agent browser tool".
 
 This file is the always-loaded router: it holds the order of operations and every hard rule as one
 line. The full contract behind each rule lives in the `grimoire/` or `docs/` file that rule names —
@@ -463,6 +462,8 @@ must operate on the real showcase/browser route and leave readable PNGs in the w
 
 - **Analysis-only**: suitability verdict + scores, object extraction, macro→micro hierarchy,
   geometry strategy, material/lighting recipe, animation/destruction feasibility, plan + risks.
-- **Implementation**: the above briefly, then edit code; verify with typecheck/build + a screenshot.
+- **Implementation**: edit code; verify typecheck/build and screenshots. Use
+  the interactive showcase and standalone HTML delivery in [showcase_viewer.md](grimoire/build/showcase_viewer.md);
+  follow its integration and verification checklist. User requirements override this default.
 - **Not feasible**: name the blocker, ask for more views / cleaner image / accepted stylization /
   a narrower target. "This cannot reach the requested fidelity from this image" is a valid result.

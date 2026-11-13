@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Object study — viewer starter</title>
+  <link rel="stylesheet" href="./viewer.css">
+</head>
+<body>
+  <!-- Adapt copy, connect the model entry point, then enable the controls.
+       Integration contract: grimoire/build/showcase_viewer.md. -->
+  <main class="showcase">
+    <header><span class="wordmark">OBJECT / STUDY</span><span class="tag">Reference reconstruction</span></header>
+    <section class="intro" aria-labelledby="object-title">
+      <p class="eyebrow">An object, explored</p>
+      <h1 id="object-title">Object name</h1>
+      <p id="description">Replace with a brief description grounded in the supplied references.</p>
+    </section>
+    <div id="viewport" role="region" aria-label="Interactive 3D model">
+      <p id="viewer-status" role="status">Viewer starter — connect the reconstruction to begin.</p>
+    </div>
+    <aside aria-labelledby="controls-title">
+      <p class="eyebrow">Inspect the details</p>
+      <h2 id="controls-title">Explore the object.</h2>
+      <fieldset disabled id="viewer-controls">
+        <legend class="visually-hidden">Model controls</legend>
+        <span class="control-label" id="view-label">View</span>
+        <div class="row" role="group" aria-labelledby="view-label">
+          <button type="button" data-view="hero">Perspective</button>
+          <button type="button" data-view="front">Front</button>
+          <button type="button" data-view="rear">Back</button>
+        </div>
+        <label for="parts">Part</label>
+        <select id="parts"><option value="">Whole object</option></select>
+        <label for="explode">Assembly <output id="amount" for="explode">0%</output></label>
+        <input id="explode" type="range" min="0" max="1" step="0.01" value="0">
+        <div id="object-options"><!-- Add only implemented object-specific options. --></div>
+        <p id="selection" role="status">Drag to rotate · scroll or pinch to zoom.<br>Select a part to inspect it.</p>
+        <button type="button" id="reset">Reset view</button>
+      </fieldset>
+    </aside>
+    <footer><span>Reference-based object study</span><span id="limitations">Add known approximation limits here.</span></footer>
+  </main>
+</body>
+</html>

@@ -44,6 +44,8 @@ assets/*
 !assets/logo.svg
 # Sponsor brand marks are referenced by the README, so they ship too.
 !assets/sponsors/
+# Reusable viewer source ships with the skill; generated renders remain local.
+!assets/showcase-viewer/
 openspec/
 runtime/
 
