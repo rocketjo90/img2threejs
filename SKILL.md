@@ -9,13 +9,10 @@ version: 2.0.1
 
 Windows: `python3` → `py`.
 
-Rebuild the object visible in a reference image as a **code-only** procedural Three.js model,
-gated by a staged sculpting pipeline and an AI-vision self-correction loop. This is
-reconstruction-by-code, **not** photogrammetry, mesh extraction, or downloaded art packs. That
-promise governs how the model is *built* — it says nothing about which file formats it can
-subsequently be *exported* to; an explicitly-selected emission target (`--target <kind>`) is a
-terminal, whole-artifact transform of the already-built model, verified to its own stated limit,
-never a second way to build one.
+Rebuild a 2D reference as a **code-only** procedural Three.js model through staged sculpting
+and AI-vision correction. This is reconstruction-by-code, not photogrammetry, mesh extraction,
+or downloaded art. An explicitly selected export (`--target <kind>`) transforms the completed
+artifact and is verified to its stated limits; it never replaces procedural construction.
 
 Agent-agnostic: use the host's image reader, browser tools, project preview, or user-supplied
 screenshots wherever this document says "agent vision" or "agent browser tool".
@@ -36,9 +33,16 @@ link it does not manage, so a hand-made link is never silently swapped for a rel
 
 ## When To Use
 
-The user attaches/points to an object image and wants a procedural Three.js model, a
+The user supplies a photo, drawing, illustration, diagram, or other 2D reference and wants a procedural Three.js model, a
 reconstruction/animation/destruction plan, a sculpt spec, or code. Also for material studies,
 action-ready props, game objects, botanical/mechanical parts, and stylized reconstructions.
+
+## Reference preparation
+
+Read [reference_planning.md](grimoire/intake/reference_planning.md) before assessment: organize
+sources/variants, compare cameras/proportions early, and record observed, inferred, and unknown
+features. Reuse evidence during corrections; uncertainty labels describe knowledge, not mesh
+visibility. Existing gates apply.
 
 ## Profile preflight (once per run, before `forge/next.py`)
 
@@ -60,7 +64,7 @@ python3 forge/state.py init --help | grep -- --profile   # profiles available he
 
 ## Core Promise
 
-Sculpt from a photo, in order — never one-shot a mesh:
+Sculpt from the reference, in order — never one-shot a mesh:
 1. **Run `python3 forge/next.py --state .img2threejs/state.json [<spec>]` first**, at every start,
    resume, and before every correction iteration. It reports the ordered checklist, exact next
    command, evidence status, and bounded correction-loop status; it never replaces the spec/pass

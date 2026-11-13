@@ -9,6 +9,11 @@ layered *after* this pass, not replacements for it.
 
 ## The Rule
 
+First organize the supplied views and variants using [reference planning](reference_planning.md).
+Apply this observation protocol to the selected working set, and retain its source IDs and
+uncertainty ledger when authoring or correcting the spec. For drawings and illustrations,
+distinguish depicted design from physical measurements and photographic material evidence.
+
 Describe what is **there**, in a fixed bottom-up order, using controlled 3D vocabulary — not
 what it *means* or how it *feels*. Three disciplines carry the whole protocol:
 
