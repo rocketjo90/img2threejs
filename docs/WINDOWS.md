@@ -34,6 +34,7 @@ this fork. No separate npm package or fork release has been published.
   Failed link replacement restores the previous installation.
 - Bare `python3` plugin commands use the running Python interpreter on Windows;
   explicit interpreter paths keep their meaning.
+- Restricted subprocess environments retain Windows' required `SystemRoot` variable.
 - Search output uses UTF-8, including redirected output and multilingual text.
 - Generated TypeScript uses consistent LF line endings without changing the frozen oracle.
 - Source indexing rejects directory junctions as well as symbolic links.

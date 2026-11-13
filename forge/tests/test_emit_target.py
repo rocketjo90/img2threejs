@@ -17,6 +17,7 @@ import tempfile
 import textwrap
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "forge"))
@@ -276,6 +277,17 @@ class DeterminismMismatchFailsNamingTheTarget(EmitTargetTestBase):
 
 
 class InterpreterPortability(unittest.TestCase):
+    def test_child_environment_keeps_windows_runtime_but_excludes_undeclared_values(self):
+        with mock.patch.dict(os.environ, {
+            "SystemRoot": "C:\\Windows", "IMG2_TEST_PRIVATE_VALUE": "do-not-forward",
+        }):
+            child = emit_target._bounded_env([])
+        self.assertNotIn("IMG2_TEST_PRIVATE_VALUE", child)
+        if os.name == "nt":
+            self.assertEqual(child["SystemRoot"], "C:\\Windows")
+        else:
+            self.assertNotIn("SystemRoot", child)
+
     def test_explicit_interpreter_preserves_arguments_with_spaces(self):
         with tempfile.TemporaryDirectory(prefix="img2 Python space ") as tmp:
             proc = emit_target.run_bounded(
