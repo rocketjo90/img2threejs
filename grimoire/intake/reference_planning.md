@@ -1,10 +1,15 @@
 # Reference planning and evidence
 
-Apply this before assessment and reuse it through blockout and form refinement. It
+Apply this before assessment and reuse it through modeling, review, and delivery. It
 complements [image analysis](image_analysis.md) and the existing suitability gates for
 photos, screenshots, scanned drawings, sketches, illustrations, diagrams, and other 2D
 sources. A reference may depict an imagined or stylized subject; reconstruct its intended
 design without silently replacing it with a physically realistic interpretation.
+
+Keep the evidence proportional to the task: use one compact project note for the reference
+index, construction map, shape targets, and unresolved features. Reuse component IDs and
+existing spec fields; these instructions introduce no schema fields or automated gates.
+Apply assembly and fabrication checks only when the requested result needs them.
 
 ## Task intake
 
@@ -85,6 +90,12 @@ and what it establishes. Preserve originals and identify derived crops by their 
 source. Distinguish alternate designs, poses, finishes, and revisions before combining
 views; do not assume every supplied image depicts the same version.
 
+Record the depicted state where relevant: assembled, disassembled, exploded, cutaway,
+damaged, partially covered, or posed differently. Note which components cover others and
+which surfaces a cutaway exposes artificially. An opening visible beneath a removed cover
+need not be visible in the assembled result. Preserve intentional damage when requested;
+do not combine intact and damaged references into an undocumented hybrid.
+
 Choose a small working set covering the silhouette, proportions, depth cues, and important
 details. For large sets, use a contact sheet or thumbnails to select candidates, then
 inspect originals for measurements and fine features. Reopen other sources when a specific
@@ -101,6 +112,18 @@ or contradictory sources may support only a conditional or stylized reconstructi
 Choose the intended orientation and record major dimension ratios and a few recognizable
 landmarks. Use absolute dimensions only when supported by dimensions or a reliable scale
 reference; otherwise use normalized proportions and label the scale as estimated.
+
+Before choosing detailed geometry, set measurable targets for identity-defining shapes:
+dimension ratios, landmark offsets, inclinations, thicknesses where supported, and curve
+profiles. Associate each target with evidence and an appropriate uncertainty or acceptance
+range; do not invent precision from blurry or perspective-distorted sources. Drive related
+features from shared parameters rather than independently estimated coordinates.
+
+Choose geometry that can express those profiles, rather than accepting the nearest
+primitive's shape. Set curvature refinement by visible contour error at the intended view
+or physical deviation at print scale, alongside any runtime triangle budget. Inspect the
+actual polygon outline: smooth normals and textures cannot repair an incorrect contour.
+Keep deliberate facets when they are part of the requested style.
 
 Identify whether each view is perspective, orthographic, diagrammatic, or uncertain. Match
 the preview camera to the reference before judging shape. Do not distort geometry to
@@ -140,3 +163,70 @@ references into supported spec evidence fields; keep additional notes beside the
 rather than inventing schema fields. Reviews and delivery should distinguish verified
 visible features from inferred completion. A passed software or visual gate does not turn
 an inference into an observation.
+
+For each important hole, seam, recess, or protrusion, record the supporting source region
+or explicit design requirement; otherwise label the interpretation as inferred or unknown.
+Distinguish through-openings, shallow relief, shadows, painted marks, and gaps between
+overlapping parts. Resolve conflicting interpretations before building dependent details,
+or document the chosen approximation and its consequences. When a review flags an error,
+reopen the relevant original source and check its depicted state before changing geometry;
+an earlier model or critique is not independent evidence. Explicit user design changes
+still govern the intended result.
+
+## 4. Map construction before detailed modeling
+
+Create a compact construction map of the major components or continuous regions. Record
+their boundaries, shape/profile, depth or thickness where relevant, openings, and how they
+join, overlap, contain, or conceal one another. Distinguish physical parts from decorative
+surface regions and modeling subdivisions; a material boundary need not be a physical seam.
+For continuous or organic subjects, describe connected volumes and layers without inventing
+mechanical joints. A single-piece subject may need only one entry.
+
+Use this map to choose the component hierarchy and geometry strategy before fine detail.
+Keep a cover, the structure behind it, and openings in each distinct when they affect the
+requested result. Do not replace layered construction with one silhouette-sized opening.
+Mark components as included, simplified, omitted by scope, or unresolved so missing parts
+cannot silently become a finished assembly. Hidden internals are not required for every
+visual asset; use simple documented completion unless evidence or intended use requires more.
+
+## 5. Validate interfaces when parts must fit or move
+
+For a physical assembly or functional mechanism, record each required mating pair, its
+shared alignment references, contacting surfaces, clearance, retention method, and assembly
+direction. Distinguish observed original construction from adaptations made for the new
+use or manufacturing process. Choose tolerances for the intended scale/process; do not
+reuse one universal clearance across unrelated parts.
+
+Check matching holes/posts, seats, fastening access, insertion paths, and required motion
+before decorating them. A plausible-looking mount is not a verified fastening system;
+absence of overlap alone does not prove retention or that a part can be inserted. Leave
+unverified interfaces provisional. Do not invent hardware or functional mechanisms for a
+visual-only reconstruction. Digital checks and nominal thicknesses do not establish
+physical fit, minimum thickness everywhere, or successful fabrication.
+
+## 6. Review structure and the delivered artifact
+
+At the appropriate geometry pass, inspect plain-material views of the complete subject
+and relevant exposed components or layers. Compare references and renders in matching
+assembly states, poses, and cameras. Use exposed views to check construction and the complete
+view to check occlusion, silhouette, and attachment; one does not substitute for the other.
+Review only the hidden structure required by scope. Record unresolved critical features
+in the existing pass review rather than letting a polished material conceal them.
+
+For requested exports, inspect the actual files in a compatible destination when available.
+Reimport and check scale, orientation, part coverage, curves, and destination-specific
+geometry requirements. For multipart delivery, reconstruct the assembled placement from
+saved transforms and render the exported parts together as well as separately. Printing
+orientations must not replace the recorded assembly transforms. Use a part manifest to
+distinguish required pieces, quantities, alternatives, and nonprinting reference objects.
+
+Keep one authoritative procedural design with reproducible destination-specific changes.
+Record export adaptations in the source/spec or a versioned transformation recipe tied to
+that source; do not leave fit corrections only in an edited output file. Regenerate affected
+previews after adaptations, or label earlier previews explicitly. Tie review evidence to
+the delivered revision using filenames and hashes or equivalent version identifiers.
+
+These are inspection requirements, not new exporter capabilities or replacements for
+existing target contracts. If destination inspection is unavailable, state which checks
+were actually performed and leave fidelity there unverified. Distinguish visual accuracy,
+mesh integrity, digital assembly fit, slicer review, and physical testing in delivery claims.
