@@ -39,10 +39,10 @@ action-ready props, game objects, botanical/mechanical parts, and stylized recon
 
 ## Reference preparation
 
-Read [reference_planning.md](grimoire/intake/reference_planning.md) before assessment: organize
-sources/variants, compare cameras/proportions early, and record observed, inferred, and unknown
-features. Reuse evidence during corrections; uncertainty labels describe knowledge, not mesh
-visibility. Existing gates apply.
+Read the [fork workflow](docs/FORK_WORKFLOW.md) and
+[reference planning](grimoire/intake/reference_planning.md) before assessment. Reuse intake
+answers on follow-ups. Check cameras, proportions and part relationships against sources.
+Uncertainty describes knowledge, not visibility. Existing gates apply.
 
 ## Profile preflight (once per run, before `forge/next.py`)
 

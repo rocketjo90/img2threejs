@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fork workflow clarification
+
+- Connect the existing Windows, viewer, intake and construction-review additions into one
+  documented workflow; short follow-ups resume the saved brief and chosen appearance stage.
+- Strengthen part-in-context review, preservation of reference expectations, and revision-aware
+  evidence handling. These are instruction updates, not new validator implementations.
+- Add generic construction guidance for coordinate frames, curvature-based subdivision,
+  continuity between separate parts, transparency during geometry inspection, and
+  consolidation of accepted corrections into authoritative parameters.
+- Record the remaining automation work separately in the fork roadmap. The underlying
+  upstream version remains 2.0.1; no new release or modeling backend is implied.
+
 **The Character Split — targets v2.1.** The base `character` domain joins
 `plugin-character`, so the base names no domain and the v2.0 plugin split closes.
 

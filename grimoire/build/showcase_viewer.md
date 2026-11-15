@@ -27,6 +27,13 @@ hooks. Copy them into the generated project and adapt them; they are a starter, 
 working reconstruction. The disabled controls deliberately remain inert until the real
 model adapter is attached. Do not deliver the shell or a placeholder model as completed work.
 
+Use this viewer throughout the agreed review stages. At a geometry checkpoint, make the
+plain-material view, useful camera presets and part inspection available; detailed finish
+controls can remain absent. Later appearance work updates the same project and part IDs.
+Selection, separation, removal and detail ownership must use one assembly hierarchy. A
+separate part can share a continuous outer profile with its neighbour. An exploded view
+shows the modeled parts; it does not establish missing interiors or physical assembly fit.
+
 ## Connect the actual reconstruction
 
 1. Import the generated model factory into the project's normal Three.js entry point.
@@ -64,6 +71,12 @@ Expose a readiness signal only after assets and the first settled frame are read
 Follow [render capture](../feedback/render_capture.md) and the existing review gates.
 Capture-mode screenshots establish model evidence; also inspect normal desktop/mobile
 screenshots to establish that the actual delivered viewer works.
+
+Reuse the existing capture and render-manifest tooling where it supports the project.
+Record the camera, assembly state and source revision for each comparison. Reuse unaffected
+evidence only when its inputs are unchanged and the gate permits it; refresh views affected
+by a geometry, camera, material or lighting change. Always verify the final packaged viewer.
+This is an execution guideline, not a claim that automatic incremental validation exists.
 
 ## Build and delivery
 

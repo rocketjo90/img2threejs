@@ -7,6 +7,29 @@ in-flight work, see [docs/UPGRADE_PLAN.md](docs/UPGRADE_PLAN.md).
 Each release has one theme. That is deliberate — a version people can name is a version people
 can plan around.
 
+## Fork workflow follow-up
+
+The [fork workflow](docs/FORK_WORKFLOW.md) preserves the current Three.js route and its
+intake, geometry-review checkpoint, viewer and destination choices. The items below are
+unimplemented engineering follow-ups, separate from the upstream release roadmap.
+
+1. Bind pass acceptance to the reviewed source and evidence revision, with explicit scoped
+   reopening and a geometry checkpoint that leaves deferred appearance pending. Add regression
+   cases where a later correction supersedes an earlier `continue` review.
+2. Require complete material comparisons and existing capture evidence; unify `passed` and
+   correction-action decisions. Support common reference-image formats on Windows without a
+   macOS-only fallback. The affected functions were unchanged from the fork's 0c0c49b baseline
+   when audited; the earlier Windows fixes did not cover every image-decoding path.
+3. Add reference-backed relationship checks and visibility-aware material comparison. Group
+   positions and global color clusters are insufficient to certify local shape or attachment.
+4. Generalize reusable geometry/viewer adapters and integrate existing capture manifests into
+   incremental validation. Preserve accepted parts and rerun affected checks, with honest
+   evidence provenance. Benchmark equal-scope tasks before claiming speed or token savings.
+
+Instruction updates do not implement these capabilities. Blender experimentation and a
+standalone AI-assisted application remain separate future work, not dependencies for using
+this fork today.
+
 ## Shipped
 
 | Version | Theme | Date | Highlights |

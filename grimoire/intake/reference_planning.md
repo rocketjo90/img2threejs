@@ -41,6 +41,13 @@ Record the answers compactly in the project notes and use them to define the qua
 contract. If the user delegates a choice, state the chosen assumption and proceed. Revisit
 only choices affected by a changed destination, scale, or style.
 
+Keep that brief with the model: selected reference variant, use, style, constraints,
+appearance stage, requested checkpoint, and accepted revision. A short follow-up such as
+"same approach", "adjust this part", or "surface finish now" inherits the established brief.
+For a new subject, carry forward explicitly requested workflow choices but reassess its
+references, proportions and object-specific constraints. Do not require the user to restate
+the skill name or earlier answers. If intended use remains unanswered, ask before geometry.
+
 ### Choose refinement for the destination
 
 Set an explicit triangle target in the existing `performanceBudget.targetTriangles` field
@@ -74,6 +81,11 @@ Provide a plain-material preview with proportions, shape details, and multiple v
 costly surface work. Preserve the source, spec, cameras, assumptions, and pending tasks.
 If the user requested approval at this point, wait for their shape feedback before textures;
 do not treat elapsed time as approval. Resume the saved model rather than rebuilding it.
+
+An explicit request to continue with appearance authorizes that stage for the current
+revision. Preserve the geometry checkpoint and its outstanding uncertainties; permission
+to texture does not prove dimensional accuracy or close unrelated defects. Apply appearance
+to the same source and hierarchy, with a plain-material comparison still available.
 
 Plan later surface requirements without generating textures prematurely. A shape preview
 is an intermediate result, not full material fidelity or completed pipeline evidence. Keep
@@ -189,6 +201,13 @@ Mark components as included, simplified, omitted by scope, or unresolved so miss
 cannot silently become a finished assembly. Hidden internals are not required for every
 visual asset; use simple documented completion unless evidence or intended use requires more.
 
+For each identity-defining part, review its own contour, its relationship to neighbours,
+and its effect on the assembled silhouette against the applicable references. Record only
+the decisive relationships: alignment, relative height/width, seam position, containment,
+overlap, repetition, or intended profile continuity. Use shared profiles where the reference
+supports continuity while retaining separate physical parts. Preserve deliberate steps and
+gaps. Group-origin proximity alone does not establish correct placement of child geometry.
+
 ## 5. Validate interfaces when parts must fit or move
 
 For a physical assembly or functional mechanism, record each required mating pair, its
@@ -212,6 +231,12 @@ assembly states, poses, and cameras. Use exposed views to check construction and
 view to check occlusion, silhouette, and attachment; one does not substitute for the other.
 Review only the hidden structure required by scope. Record unresolved critical features
 in the existing pass review rather than letting a polished material conceal them.
+
+Keep reference-derived expectations separate from the runtime inventory. Compare the built
+parts to those expectations; do not rewrite required features to match what happened to be
+built. Change the expected design only with new evidence or a documented scope decision.
+A good global silhouette score cannot overrule an incorrect identity-defining relationship.
+After a correction, recheck the affected part in isolation and in its assembled context.
 
 For requested exports, inspect the actual files in a compatible destination when available.
 Reimport and check scale, orientation, part coverage, curves, and destination-specific

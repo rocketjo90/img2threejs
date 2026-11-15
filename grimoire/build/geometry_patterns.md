@@ -22,6 +22,43 @@ Use this reference only when implementing a model.
   as anything but an opaque rectangle, and this pipeline emits no textures. Rejected outright for
   hair.
 
+## Construction discipline
+
+Apply these instructions where the subject and requested use make them relevant. Keep
+measurements and checks in the existing project notes or supported spec fields; these
+instructions do not introduce new automated validators.
+
+1. **Declare coordinates before detailed construction.** Record the object's axes, origin,
+   units or normalized scale, and the local orientation of directional or repeated parts.
+   Check front/rear, handedness and radial placement in a simple diagnostic view before
+   adding detail. Transform child geometry consistently with its parent frame; do not
+   impose a new convention on an existing project without updating its dependent views.
+2. **Sample geometry according to curvature.** Use minimal subdivision along straight or
+   constant-slope profile spans, and concentrate samples where curvature or the required
+   contour accuracy demands them. Preserve subdivisions needed for deformation, openings
+   or downstream operations. Check the actual silhouette, openings and shading after
+   reduction at the intended viewing distance or physical scale; smooth normals alone do
+   not establish geometric accuracy. Measure the resulting triangle count.
+3. **Check intended continuity across separate parts.** Where the reference supports a
+   continuous contour, derive adjoining boundaries from a shared profile or surface.
+   Compare corresponding seam positions and, for a smooth transition, tangent directions
+   in a common coordinate frame. State a tolerance appropriate to the reference and use;
+   preserve deliberate steps, gaps and sharp transitions. Keep physical parts independently
+   identified even when they share a profile. Inspect the seam in assembly as well as
+   numerically; matching surface directions alone does not prove matching boundaries.
+4. **Use simple transparency for geometry inspection.** For transparent or enclosing
+   components, inspect the outer contour in plain opaque material, the assembled layers
+   with simple transparency, and relevant exposed structure with the cover removed or
+   isolated. This inspection does not require final textures or imply appearance approval.
+   Model only the internal detail supported by evidence or required by the agreed scope;
+   label inferred completion. Match reference assembly states when comparing views.
+5. **Consolidate accepted corrections.** Express an accepted revision directly in the
+   authoritative parameters and dependent geometry instead of accumulating corrective
+   translations or scales over obsolete coordinates. Preserve intentional transforms,
+   pivots and assembly operations. Keep a recoverable prior revision, then compare the
+   consolidated result with the accepted geometry and recheck affected relationships,
+   actions and views. Consolidation must not silently change the accepted design.
+
 ## Material Recipes
 
 - wood: brown base, vertical grain normal, roughness variation, darker creases, lighter worn edges

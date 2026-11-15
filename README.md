@@ -6,6 +6,8 @@
 > [Task intake and reference planning](grimoire/intake/reference_planning.md) cover destination,
 > style, detail constraints, appearance staging, source organization,
 > early camera/proportion checks, and observed versus inferred details for any 2D input.
+> The [fork workflow](docs/FORK_WORKFLOW.md) connects these additions: saved intake,
+> procedural Three.js, contextual geometry review, optional appearance, and verified delivery.
 > The upstream npm commands below still install the original project.
 
 <div align="center">
