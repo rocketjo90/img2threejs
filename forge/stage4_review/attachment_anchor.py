@@ -155,7 +155,7 @@ def analyze_attachments(spec: dict[str, Any], *, measured: dict[str, list[float]
     Returns a dict with `errors`, `warnings`, per-attachment `attachments` records (component,
     anchor, anchorKind, distance, maxOffset, offsetRule, withinLimit -- the last four are None
     until a measured position resolves them), `unmeasuredAttachments`, `attachmentCount`, and
-    `passed` (True iff `errors` is empty).
+    `passed` (true/false for applicable records, null when not applicable).
     """
     errors: list[str] = []
     warnings: list[str] = []
@@ -276,13 +276,35 @@ def analyze_attachments(spec: dict[str, Any], *, measured: dict[str, list[float]
                     f"{anchor!r}, exceeding maxOffset {max_offset:.4f} ({rule})"
                 )
 
+    expectation = spec.get('attachmentExpectations', {})
+    if not isinstance(expectation, dict):
+        errors.append('ANCHOR_COVERAGE: attachmentExpectations must be an object')
+        expectation = {}
+    expected = expectation.get('components', [])
+    if not isinstance(expected, list) or any(not isinstance(i, str) or not i.strip() for i in expected) or len(set(expected)) != len(expected):
+        errors.append('ANCHOR_COVERAGE: components must contain unique nonempty IDs')
+        expected = []
+    covered = {r['component'] for r in records}
+    for cid in expected:
+        if cid not in covered:
+            errors.append(f'ANCHOR_COVERAGE: expected attachment {cid!r} has no anchor record')
+    required = expectation.get('requireMeasured', False)
+    if not isinstance(required, bool):
+        errors.append('ANCHOR_COVERAGE: requireMeasured must be boolean')
+    if required and (expected or records) and (measured is None or unmeasured):
+        errors.append('ANCHOR_COVERAGE: required measured positions are missing')
+    status = 'failed' if errors else ('not-applicable' if not records else 'passed')
     return {
         "errors": errors,
         "warnings": warnings,
         "attachments": records,
         "unmeasuredAttachments": unmeasured,
         "attachmentCount": len(attachment_components),
-        "passed": not errors,
+        "passed": None if status == 'not-applicable' else not errors,
+        "status": status,
+        "reason": 'No anchored items declared; surface fit was not evaluated.' if status == 'not-applicable' else '',
+        "proximityVerified": bool(records) and measured is not None and not unmeasured and not errors,
+        "surfaceFitVerified": False,
     }
 
 
@@ -317,7 +339,8 @@ def _format_summary(result: dict[str, Any]) -> str:
         lines.append(f"ERROR: {message}")
     for message in result["warnings"]:
         lines.append(f"WARNING: {message}")
-    lines.append("verdict: " + ("PASS" if result["passed"] else "FAIL"))
+    lines.append("verdict: " + result['status'].upper())
+    if result.get('reason'): lines.append(result['reason'])
     return "\n".join(lines)
 
 
@@ -339,7 +362,7 @@ def main(argv: list[str]) -> int:
             print(json.dumps(result, indent=2, ensure_ascii=False))
         else:
             print(_format_summary(result))
-        return 0 if result["passed"] else 1
+        return 0 if result['status'] in ('passed', 'not-applicable') else 1
     except Exception as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

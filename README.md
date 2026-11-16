@@ -11,6 +11,9 @@
 > New reconstructions start in a fresh reference-only project with `forge/new_project.py`;
 > prior object geometry is not a starting template. Previews default to basic reference
 > materials with a Clay toggle in the original Object / Study viewer style.
+> For native editable Blender models without a web viewer, install the separate
+> [img2blender skill](skills/img2blender/README.md). Both tools use staged Basic/Clay
+> geometry review and [feature-evidence checks](docs/FEATURE_EVIDENCE.md).
 > The upstream npm commands below still install the original project.
 
 <div align="center">

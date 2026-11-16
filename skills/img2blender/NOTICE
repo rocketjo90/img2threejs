@@ -1,0 +1,7 @@
+img2blender is a Blender-native adaptation of the img2threejs reconstruction workflow.
+Source: https://github.com/img2threejs/img2threejs
+Fork workflow: https://github.com/rocketjo90/img2threejs at 5c2aa65e2c288b641e54e88c0f3aba0f4f7ded22
+Original workflow material is distributed under Apache License 2.0.
+This distribution adds new Python project management and headless Blender execution code,
+and adapts the reference, review and delivery guidance for native Blender output.
+It is not a release of the upstream img2threejs project or an affiliation with Blender.

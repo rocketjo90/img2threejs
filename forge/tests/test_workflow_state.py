@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "forge" / "_shared"))
 
 from workflow_state import (  # noqa: E402
+    geometry_review_hold,
     WorkflowStateError,
     deferred_steps,
     mark_steps,
@@ -25,6 +26,21 @@ from workflow_state import (  # noqa: E402
 
 
 class WorkflowStateTest(unittest.TestCase):
+    def test_geometry_hold_survives_sync_and_blocks_completion(self):
+        state = new_state('reference.png')
+        with self.assertRaises(WorkflowStateError): geometry_review_hold(state,True,'Too early')
+        state['passHistory'].append({'passId':'form-refinement','checklist':[]})
+        geometry_review_hold(state,True,'User requested geometry review before finish.')
+        self.assertEqual(status_payload(state)['status'],'awaiting-user')
+        self.assertIsNone(status_payload(state)['nextCommand'])
+        with self.assertRaises(WorkflowStateError): mark_steps(state,['image-analysis'],status='done',evidence=['report.md'])
+        sync_from_spec(state,{'reviewHistory':[]},'material-pass')
+        self.assertEqual(status_payload(state)['status'],'awaiting-user')
+        geometry_review_hold(state,False,'User requested a geometry correction; no finish authorized.')
+        self.assertNotEqual(status_payload(state)['status'],'awaiting-user')
+        state['status']='stopped'
+        with self.assertRaises(WorkflowStateError): geometry_review_hold(state,True,'Do not bypass limit')
+
     def test_generic_state_starts_with_mandatory_image_analysis(self):
         state = new_state("reference.png")
         payload = status_payload(state)

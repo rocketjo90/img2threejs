@@ -140,15 +140,38 @@ class AttachmentAnchorGate(unittest.TestCase):
         self.assertIn("default", record["offsetRule"])
         self.assertFalse(record["withinLimit"])
 
-    def test_no_attachments_passes_and_reports_zero_count(self) -> None:
+    def test_no_attachments_is_not_applicable(self) -> None:
         spec = copy.deepcopy(_base_spec())
         spec["componentTree"] = [c for c in spec["componentTree"] if c["id"] != "hat"]
         result = analyze_attachments(spec)
         self.assertEqual(result["errors"], [])
-        self.assertTrue(result["passed"])
+        self.assertIsNone(result["passed"])
+        self.assertEqual(result['status'], 'not-applicable')
+        self.assertFalse(result['surfaceFitVerified'])
         self.assertEqual(result["attachmentCount"], 0)
         self.assertEqual(result["unmeasuredAttachments"], [])
 
+    def test_expected_attachment_cannot_be_omitted(self):
+        spec = _base_spec()
+        spec['attachmentExpectations'] = {'components':['missing-item'], 'requireMeasured':True}
+        result = analyze_attachments(spec)
+        self.assertFalse(result['passed'])
+        self.assertIn('ANCHOR_COVERAGE', _tags(result['errors']))
+
+    def test_required_measurements_missing_and_present(self):
+        spec = _base_spec()
+        spec['attachmentExpectations'] = {'components':['hat'], 'requireMeasured':True}
+        self.assertFalse(analyze_attachments(spec)['passed'])
+        self.assertFalse(analyze_attachments(spec, measured={})['passed'])
+        result = analyze_attachments(spec, measured={'hat':[0,0,0], 'upper-back':[0,.1,0]})
+        self.assertTrue(result['passed'])
+        self.assertTrue(result['proximityVerified'])
+        self.assertFalse(result['surfaceFitVerified'])
+
+    def test_malformed_expected_coverage_fails(self):
+        for value in (None, ['hat'], {'components':[{}]}, {'components':['hat','hat']}, {'requireMeasured':'yes'}):
+            spec = _base_spec(); spec['attachmentExpectations'] = value
+            self.assertFalse(analyze_attachments(spec)['passed'])
     def test_component_absent_from_measured_lands_in_unmeasured(self) -> None:
         spec = _base_spec()
         # `measured` is supplied (so ANCHOR_PROXIMITY is in scope) but omits the hat itself --

@@ -1,0 +1,10 @@
+{
+  "skill": "img2blender",
+  "version": "0.2.0",
+  "derivedWorkflow": "https://github.com/rocketjo90/img2threejs",
+  "derivedRevision": "5c2aa65e2c288b641e54e88c0f3aba0f4f7ded22",
+  "upstream": "https://github.com/img2threejs/img2threejs",
+  "license": "Apache-2.0",
+  "changes": "New Blender-native Python implementation. Retains reference planning, fresh-start discipline, ordered geometry review, basic/clay parity, bounded corrections and evidence provenance. Omits web viewer, Three.js generation and runtime gates. Adds headless Blender execution, native save/reopen checks and execution timing. Adds generic feature-evidence guidance, sampled surface-contact checks and enforced Clay-mode audit results.",
+  "scope": "Generic object construction scaffold driven by the host AI; no automatic image-to-mesh model or full port of upstream domain plugins."
+}

@@ -8,6 +8,22 @@ visual evidence. Object-specific procedural code is expected, not a competing wo
 
 ## Working sequence
 
+Use [feature evidence](FEATURE_EVIDENCE.md) for the shared construction/review contract.
+The anchor gate checks declared anchor proximity, not surface fit. Its `not-applicable` result
+with no attachments must not be reported as a fit pass. For expected anchored items, declare
+`attachmentExpectations: {"components": ["item-id"], "requireMeasured": true}` in the spec;
+missing coverage or measured positions then fails. Mechanical contact/clearance still needs
+actual surface witnesses and an appropriate separate check, even when anchor proximity passes.
+
+After reviewed form geometry and geometry-first delivery, record the explicit hold:
+`python3 forge/state.py hold-geometry --state <state.json> --reason "Geometry ready for user feedback; finish deferred."`
+`next.py` and `state.py status` then report awaiting-user without an appearance command;
+marking further steps is blocked. Resume only after a new user instruction using
+`state.py resume-geometry --state <state.json> --reason "<actual instruction>"`.
+If feedback requests geometry corrections, return to the relevant geometry pass through the
+existing correction workflow before building; releasing a hold does not itself authorize finish.
+Holds preserve correction counters and cannot release a hard stop.
+
 1. **Establish the brief.** Read the actual installed skill and identify its source/revision
    when starting a project or comparing hosts. The upstream version number alone cannot
    distinguish fork additions. Ask only unanswered questions about use, style, relevant

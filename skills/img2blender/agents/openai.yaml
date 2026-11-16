@@ -1,0 +1,6 @@
+interface:
+  display_name: "Image to Blender"
+  short_description: "Staged image reconstruction in headless Blender"
+  default_prompt: "Use $img2blender to reconstruct these references in headless Blender and present Basic and Clay geometry-review renders."
+policy:
+  allow_implicit_invocation: true

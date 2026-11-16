@@ -41,6 +41,8 @@ action-ready props, game objects, botanical/mechanical parts, and stylized recon
 Read the [fork workflow](docs/FORK_WORKFLOW.md) and
 [reference planning](grimoire/intake/reference_planning.md) before assessment. Reuse intake
 answers on follow-ups. Check cameras, proportions and part relationships against sources.
+Apply the [feature evidence contract](docs/FEATURE_EVIDENCE.md) to negative space, surface
+interfaces, local origins and geometry-review holds; an empty attachment gate is not fit evidence.
 Uncertainty describes knowledge, not visibility. Existing gates apply.
 Planning covers feature authority, measurements, cameras and masks. `next.py --state ...`
 also refreshes the generated current-status Markdown/JSON beside state.

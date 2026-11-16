@@ -340,6 +340,8 @@ def mark_steps(
 ) -> None:
     if state.get("status") == "stopped":
         raise WorkflowStateError("state is hard-stopped; do not mark more work complete")
+    if state.get('geometryReviewHold', {}).get('pending'):
+        raise WorkflowStateError('Geometry feedback is pending; record the user instruction before resuming.')
     if status not in {"done", "skipped", "pending"}:
         raise WorkflowStateError("mark status must be done, skipped, or pending")
     if status == "done" and not evidence:
@@ -446,6 +448,20 @@ def sync_from_spec(state: dict[str, Any], spec: dict[str, Any], current_pass: st
         recompute(state)
 
 
+def geometry_review_hold(state: dict[str, Any], pending: bool, reason: str) -> None:
+    if not reason.strip(): raise WorkflowStateError('Record the checkpoint or user instruction.')
+    if state.get('status') == 'stopped': raise WorkflowStateError('A geometry hold cannot bypass a hard stop.')
+    if pending:
+        if not any(h.get('passId') == 'form-refinement' and h.get('iteration') != 'refine' for h in state.get('passHistory', [])):
+            raise WorkflowStateError('Review the form pass before holding geometry.')
+        if state.get('geometryReviewHold', {}).get('pending'): raise WorkflowStateError('Geometry review already pending.')
+    elif not state.get('geometryReviewHold', {}).get('pending'):
+        raise WorkflowStateError('No geometry hold is pending.')
+    event = {'pending':pending, 'reason':reason}
+    state['geometryReviewHold'] = event
+    state.setdefault('geometryHoldHistory', []).append(dict(event))
+
+
 def status_payload(state: dict[str, Any]) -> dict[str, Any]:
     entry = next_entry(state)
     current_pass = str(state.get("currentPass") or "")
@@ -453,10 +469,11 @@ def status_payload(state: dict[str, Any]) -> dict[str, Any]:
     visible_scopes = {"setup", "final", "rig"}
     if current_pass != "complete":
         visible_scopes.add("pass")
+    held = state.get('geometryReviewHold', {}).get('pending') and state['status'] != 'stopped'
     return {
-        "status": state["status"],
+        "status": 'awaiting-user' if held else state["status"],
         "deferred": deferred_steps(state),
-        "currentStep": state["currentStep"],
+        "currentStep": 'geometry-review' if held else state["currentStep"],
         "currentPass": current_pass,
         "loop": {
             "passCount": loops.get("perPass", {}).get(current_pass, 0),
@@ -464,8 +481,8 @@ def status_payload(state: dict[str, Any]) -> dict[str, Any]:
             "totalCount": loops["total"],
             "maxTotal": loops["maxTotal"],
         },
-        "nextCommand": None if state["status"] != "active" or entry is None else _format_command(state, entry),
-        "stopReason": state.get("stopReason") or None,
+        "nextCommand": None if held or state["status"] != "active" or entry is None else _format_command(state, entry),
+        "stopReason": ('Geometry review awaits user feedback: ' + state['geometryReviewHold']['reason']) if held else state.get("stopReason") or None,
         "pending": [
             entry["id"]
             for entry in state["checklist"]

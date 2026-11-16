@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "_shared"))
 
 from domains import DomainRegistryError, registered_domains  # noqa: E402
 from workflow_state import (  # noqa: E402
+    geometry_review_hold,
     WorkflowStateError,
     load_state,
     mark_steps,
@@ -53,6 +54,10 @@ def build_parser() -> argparse.ArgumentParser:
     mark.add_argument("--evidence", action="append", default=[])
     mark.add_argument("--reason", default="")
 
+    for name in ('hold-geometry', 'resume-geometry'):
+        hold = commands.add_parser(name)
+        hold.add_argument('--state', type=Path, default=Path('.img2threejs/state.json'))
+        hold.add_argument('--reason', required=True)
     return parser
 
 
@@ -97,6 +102,10 @@ def main(argv: list[str]) -> int:
             print_status(state, as_json=args.json)
         elif args.command == "mark":
             mark_steps(state, args.step, status=args.status, evidence=args.evidence, reason=args.reason)
+            save_state(args.state, state)
+            print_status(state)
+        elif args.command in ('hold-geometry', 'resume-geometry'):
+            geometry_review_hold(state, args.command == 'hold-geometry', args.reason)
             save_state(args.state, state)
             print_status(state)
         return 3 if state.get("status") == "stopped" else 0
