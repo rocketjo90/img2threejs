@@ -36,7 +36,7 @@ from subdivision import (
     TORUS_RADIAL_SEGMENTS,
     TORUS_TUBULAR_SEGMENTS,
 )
-from validate_sculpt_spec import ATTACHMENT_PRIMITIVES, VALID_PRIMITIVES, validate_spec
+from validate_sculpt_spec import ATTACHMENT_PRIMITIVES, GEOMETRY_PASSES, VALID_PRIMITIVES, validate_spec
 from vertex_paint import VertexPaintError, normalize_vertex_paint
 from visual_hull import MAX_VISUAL_HULL_TRIANGLES
 
@@ -75,9 +75,9 @@ def load_spec(path: Path) -> dict[str, Any]:
     return payload
 
 
-def strict_quality_failures(spec: dict[str, Any]) -> tuple[list[str], list[str], list[str]]:
+def strict_quality_failures(spec: dict[str, Any], pass_id: str | None = None) -> tuple[list[str], list[str], list[str]]:
     """Return normal validation output plus the failures that block production codegen."""
-    errors, warnings = validate_spec(spec)
+    errors, warnings = validate_spec(spec, pass_id=pass_id)
     failures = list(errors)
     failures.extend(
         f"strict quality failure: {warning.removeprefix('quality: ').strip()}"
@@ -3335,7 +3335,8 @@ def generate(spec: dict[str, Any], pass_id: str) -> str:
         "  // tuxedo cat, whose black fur rendered as speckled grey-and-white from a palette that",
         "  // only ever described two flat regions.",
         "  const textureless = (spec.textureless as { declared?: boolean } | undefined)?.declared === true;",
-        "  const textures = textureless",
+        f"  const geometryReview = {str(pass_id in GEOMETRY_PASSES).lower()};",
+        "  const textures = textureless || geometryReview",
         "    ? null",
         "    : makeReferenceTextureSet(spec, options) ?? makeProceduralTextureSet(id, spec, options);",
         "  const material = new THREE.MeshPhysicalMaterial({",
@@ -4069,10 +4070,11 @@ def main(argv: list[str]) -> int:
 
     spec_path = args.spec.expanduser().resolve()
     spec = load_spec(spec_path)
-    _errors, warnings, strict_failures = strict_quality_failures(spec)
+    pass_id = args.pass_id or unlocked_pass(spec)
+    _errors, warnings, strict_failures = strict_quality_failures(spec, pass_id)
     if strict_failures and not args.allow_nonstrict:
         emit_blocked(
-            blocked_report(spec_path, strict_failures, warnings, args.pass_id),
+            blocked_report(spec_path, strict_failures, warnings, pass_id),
             args.blocked_report,
         )
         return 2
@@ -4082,7 +4084,6 @@ def main(argv: list[str]) -> int:
         parser.error(f"spec validation failed: {'; '.join(_errors)}")
     if args.allow_nonstrict:
         print("WARNING: generating a non-production test-fixture factory (--allow-nonstrict)", file=sys.stderr)
-    pass_id = args.pass_id or unlocked_pass(spec)
     try:
         assert_pass_unlocked(spec, pass_id)
     except ValueError as exc:

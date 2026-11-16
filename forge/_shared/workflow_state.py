@@ -46,6 +46,7 @@ SETUP_STEPS: Final = (
         " (single-crop route: analyze_texture.py + extract_pbr_evidence.py per verified crop; otherwise skip with a reason)",
     ),
     ("material-spec-wiring", "python3 forge/stage2_spec/apply_material_analysis.py {spec} material-analysis.json --in-place"),
+    ("projection-appearance", "If reference projection was selected, run the saved camera/de-light/bake plan now; otherwise skip with the recorded applicability reason. See the projection route in SKILL.md."),
     ("strict-validation", "python3 forge/stage2_spec/validate_sculpt_spec.py {spec} --strict-quality"),
 )
 
@@ -61,6 +62,7 @@ PASS_STEPS: Final = (
 )
 
 FINAL_STEPS: Final = (
+    ("viewer-delivery", "Verify the actual standalone HTML with networking disabled: render, controls, desktop/mobile, console and request checks; save a delivery report with the file SHA-256. See grimoire/build/showcase_viewer.md. Record explicit non-viewer delivery as skipped with its reason."),
     ("part-coverage", "python3 forge/stage4_review/check_part_coverage.py --spec {spec} --manifest parts.json"),
     ("action-ready", "Verify explodable/clickable hierarchy, pivots, sockets, and root.userData.sculptRuntime"),
     # D4/task 3.8: base-owned, appended unconditionally -- no plugin ever splices this in (there is
@@ -256,6 +258,10 @@ def _pending(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def _format_command(state: dict[str, Any], entry: dict[str, Any]) -> str:
     artifacts = state.get("artifacts", {})
     command = str(entry["command"])
+    if entry["id"] == "projection-route" and appearance_deferred(state):
+        command = "Record projection applicability and camera plan for {reference}; defer texture de-lighting/baking to appearance. Keep the plan as evidence."
+    if entry["id"] == "strict-validation" and "--pass-id" not in command and appearance_deferred(state):
+        command += " --pass-id " + (state.get("currentPass") or "blockout")
     if entry["id"] == "build-current-pass":
         action = state.get("iterationAction")
         if action == "refine-code":
@@ -269,8 +275,23 @@ def _format_command(state: dict[str, Any], entry: dict[str, Any]) -> str:
     )
 
 
+def appearance_deferred(state: dict[str, Any]) -> bool:
+    # Domain plugins retain their own admission/material ordering. For the general routes,
+    # evidence remains pending and becomes mandatory again before appearance generation.
+    return state.get("profile") == "generic" and state.get("currentPass") in {
+        "", None, "blockout", "structural-pass", "form-refinement"
+    }
+
+
+def deferred_steps(state: dict[str, Any]) -> list[str]:
+    return [entry["id"] for entry in state["checklist"]
+            if appearance_deferred(state) and entry["status"] == "pending"
+            and entry["id"] in {"material-evidence", "material-spec-wiring", "projection-appearance"}]
+
+
 def next_entry(state: dict[str, Any]) -> dict[str, Any] | None:
-    setup_pending = _pending(_entries(state, "setup"))
+    deferred = set(deferred_steps(state))
+    setup_pending = [entry for entry in _pending(_entries(state, "setup")) if entry["id"] not in deferred]
     if setup_pending:
         return setup_pending[0]
     if state.get("currentPass") != "complete":
@@ -434,6 +455,7 @@ def status_payload(state: dict[str, Any]) -> dict[str, Any]:
         visible_scopes.add("pass")
     return {
         "status": state["status"],
+        "deferred": deferred_steps(state),
         "currentStep": state["currentStep"],
         "currentPass": current_pass,
         "loop": {

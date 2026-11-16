@@ -10,12 +10,14 @@ can plan around.
 ## Fork workflow follow-up
 
 The [fork workflow](docs/FORK_WORKFLOW.md) preserves the current Three.js route and its
-intake, geometry-review checkpoint, viewer and destination choices. The items below are
-unimplemented engineering follow-ups, separate from the upstream release roadmap.
+intake, geometry-review checkpoint, viewer and destination choices. The fork now implements
+pass-scoped appearance deferral, consistent textureless material handling, generated current
+status, clean diagnostic JSON and a viewer-delivery checklist step. The items below remain
+engineering follow-ups, separate from the upstream release roadmap.
 
 1. Bind pass acceptance to the reviewed source and evidence revision, with explicit scoped
-   reopening and a geometry checkpoint that leaves deferred appearance pending. Add regression
-   cases where a later correction supersedes an earlier `continue` review.
+   reopening. Appearance deferral is implemented; revision-bound acceptance is not. Add
+   regression cases where a later correction supersedes an earlier `continue` review.
 2. Require complete material comparisons and existing capture evidence; unify `passed` and
    correction-action decisions. Support common reference-image formats on Windows without a
    macOS-only fallback. The affected functions were unchanged from the fork's 0c0c49b baseline
@@ -26,7 +28,7 @@ unimplemented engineering follow-ups, separate from the upstream release roadmap
    incremental validation. Preserve accepted parts and rerun affected checks, with honest
    evidence provenance. Benchmark equal-scope tasks before claiming speed or token savings.
 
-Instruction updates do not implement these capabilities. Blender experimentation and a
+Instruction contracts alone do not implement these remaining capabilities. Blender experimentation and a
 standalone AI-assisted application remain separate future work, not dependencies for using
 this fork today.
 

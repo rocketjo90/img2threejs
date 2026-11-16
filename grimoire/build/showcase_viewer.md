@@ -90,8 +90,10 @@ Build the project first, then bundle its real JavaScript, CSS, and required asse
 the HTML using a supported bundler or a verified project-specific packaging step. Ensure
 there are no runtime imports, fetches, fonts, textures, or other resources that depend on
 a development server or CDN. Avoid ad hoc text replacement of arbitrary script contents.
-If offline packaging is unavailable, deliver the working served project and state the
-limitation; do not call it standalone or offline without checking it.
+If offline packaging is unavailable, retain the working served project as an interim result
+and state that default delivery remains incomplete. Do not call it standalone/offline or
+silently substitute that format. An explicit user choice of hosted/integrated output overrides
+the default. Reuse a proven bundling setup rather than reconstructing the viewer each time.
 
 Before delivery:
 
@@ -103,6 +105,16 @@ Before delivery:
 - Open the final standalone file directly with networking disabled, repeat its controls,
   and confirm that the rendered result matches the served version. Check the packaged
   file, not just the development server or an HTML page claiming offline support.
+
+Save `delivery-review.json` beside the final artifact, containing its filename and SHA-256,
+source revision, chosen delivery format, test date, and checks for direct-file/offline load,
+model readiness, console errors, failed/external requests, desktop/mobile layout and each
+implemented control. Record `passed`, `failed` or `not-tested` with evidence for each check;
+include served-versus-packaged visual parity. Hash the file after the final packaging edit.
+A missing or untested required check is not a pass. Reference this report as evidence for
+the `viewer-delivery` state step (new projects); older checklists still require this delivery
+review under these instructions. The report records real browser tests, not a static HTML
+scan or an assertion that bundling succeeded. It does not certify model fidelity.
 
 Report what was actually checked and any remaining limitation. The shell saves repeated
 layout work; it never substitutes for model-specific geometry, controls, or verification.

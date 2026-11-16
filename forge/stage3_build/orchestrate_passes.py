@@ -13,6 +13,8 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "_shared"))
 from feature_acceptance_policy import feature_gate_failures
 from status_banner import emit_status
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "stage2_spec"))
+from validate_sculpt_spec import is_textureless, validate_textureless
 
 
 DEFAULT_PASS_ORDER = [
@@ -385,9 +387,12 @@ def material_pass_gaps(spec: dict[str, Any]) -> list[str]:
     if not any(material_has_palette(item) for item in materials):
         return ["no material has a reference-derived albedo palette or secondary color zones"]
     gaps: list[str] = []
-    if not any(material_has_response(item) for item in materials):
+    for material in materials:
+        validate_textureless(str(material.get("id", "(unnamed)")), material, gaps)
+    all_textureless = all(is_textureless(item) for item in materials)
+    if not all_textureless and not any(material_has_response(item) for item in materials):
         gaps.append("no material defines roughness variation or normal/bump/displacement response")
-    if not any(material_has_locality(item) for item in materials):
+    if not all_textureless and not any(material_has_locality(item) for item in materials):
         gaps.append("no material defines local overrides, AO, dirt, wear, stains, moss, chips, or scratches")
     material_pipeline = spec.get("materialPipeline")
     if material_pipeline is not None:
@@ -408,7 +413,7 @@ def material_pass_gaps(spec: dict[str, Any]) -> list[str]:
                 gaps.append("materialGate.passed must be true after crop/render comparison")
     if quality_first_enabled(spec):
         for material in materials:
-            if material.get("qualityTier") == "utility":
+            if material.get("qualityTier") == "utility" or is_textureless(material):
                 continue
             gaps.extend(quality_first_material_gaps(spec, material))
     return gaps
@@ -416,6 +421,12 @@ def material_pass_gaps(spec: dict[str, Any]) -> list[str]:
 
 def surface_pass_gaps(spec: dict[str, Any]) -> list[str]:
     components = [item for item in spec.get("componentTree", []) if isinstance(item, dict)]
+    materials = {item.get("id"): item for item in spec.get("materials", []) if isinstance(item, dict)}
+    if components and all(is_textureless(materials.get(item.get("material"), {})) for item in components):
+        errors: list[str] = []
+        for mid, material in materials.items():
+            validate_textureless(str(mid), material, errors)
+        return errors
     has_surface_detail = any(has_non_empty(item.get("surfaceDetail")) for item in components)
     if not has_surface_detail:
         return ["componentTree has no meaningful surfaceDetail for normal/bump/displacement/AO locality"]
@@ -451,9 +462,8 @@ def pass_specific_evidence(pass_id: str) -> list[str]:
     if pass_id == "material-pass":
         return [
             "reference-derived albedo palette with dominant, secondary, and accent colors",
-            "independent albedo, roughness, height/normal, and AO maps",
-            "macro, meso, and micro surface-frequency response at 1024px or higher",
-            "local material masks: AO, dirt, wear, stains, moss, chips, scratches, wetness, or equivalent",
+            "textured materials: independent maps, macro/meso/micro response at >=1024px, and local masks",
+            "textureless materials: evidence-bearing declaration, authored color and scalar response; no invented texture",
             "neutral, grazing-light close-up, and reference-matched browser screenshots",
             "AI vision comparison sheet score meeting the visual acceptance threshold",
         ]

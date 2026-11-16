@@ -456,7 +456,8 @@ function createSculptMaterial(id: string, spec: SculptMaterialSpec, options: Pro
   // tuxedo cat, whose black fur rendered as speckled grey-and-white from a palette that
   // only ever described two flat regions.
   const textureless = (spec.textureless as { declared?: boolean } | undefined)?.declared === true;
-  const textures = textureless
+  const geometryReview = true;
+  const textures = textureless || geometryReview
     ? null
     : makeReferenceTextureSet(spec, options) ?? makeProceduralTextureSet(id, spec, options);
   const material = new THREE.MeshPhysicalMaterial({

@@ -322,7 +322,8 @@ def main(argv: list[str]) -> int:
     args = parser.parse_args(argv)
 
     try:
-        emit_status(load_optional_spec(args.spec), next_command="diagnose_render.py", stream=sys.stderr if args.json else sys.stdout)
+        # stdout is JSON in both modes; logs must never corrupt redirected evidence files.
+        emit_status(load_optional_spec(args.spec), next_command="diagnose_render.py", stream=sys.stderr)
         if args.map_stripped_scene:
             scene = json.loads(args.map_stripped_scene.read_text(encoding="utf-8"))
             args.map_stripped_scene.write_text(json.dumps(strip_material_maps(scene), indent=2) + "\n", encoding="utf-8")

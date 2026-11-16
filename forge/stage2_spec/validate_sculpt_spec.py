@@ -1444,6 +1444,7 @@ def validate_components(
     evidence_ids: set[str],
     errors: list[str],
     warnings: list[str],
+    *, appearance_warnings: list[str] | None = None,
 ) -> None:
     components = spec.get("componentTree", [])
     materials_by_id = {
@@ -1505,7 +1506,8 @@ def validate_components(
                 # not colorMaterialRecipe.materialClass — that field only exists once the
                 # recipe is present, so using it as its own gate would be circular.
                 if topology_class != "material-only":
-                    validate_color_material_recipe(component_id, component.get("colorMaterialRecipe"), warnings)
+                    validate_color_material_recipe(component_id, component.get("colorMaterialRecipe"),
+                                                   warnings if appearance_warnings is None else appearance_warnings)
                 # Plan 1.3 G.1: flatness pre-check — catch a flat extrude faking a curved
                 # 3D form BEFORE any render (the karambit-blade defect: a thin extrude of a
                 # curved silhouette only looks right from the reference camera angle).
@@ -2354,6 +2356,7 @@ def validate_look_dev_targets(spec: dict[str, Any], errors: list[str], warnings:
         errors.append("lookDevTargets must be an object")
     materials = [item for item in spec.get("materials", []) if isinstance(item, dict)]
     if materials:
+        all_textureless = all(is_textureless(item) for item in materials)
         has_palette = any(
             has_non_empty_detail(item.get("colorVariation"))
             or has_non_empty_detail(item.get("albedo", {}).get("secondary") if isinstance(item.get("albedo"), dict) else None)
@@ -2391,11 +2394,11 @@ def validate_look_dev_targets(spec: dict[str, Any], errors: list[str], warnings:
             or has_non_empty_detail(item.get("patina"))
             for item in materials
         )
-        if not has_palette:
+        if not has_palette and not all_textureless:
             warnings.append("quality: material-pass needs reference-derived albedo palette or secondary/accent color zones")
-        if not has_response:
+        if not has_response and not all_textureless:
             warnings.append("quality: material-pass needs roughness variation or normal/bump/displacement response")
-        if not has_locality:
+        if not has_locality and not all_textureless:
             warnings.append("quality: material-pass needs local overrides, AO, dirt, wear, stains, moss, chips, scratches, or equivalent masks")
         quality_first = isinstance(targets, dict) and targets.get("qualityPriority") == "reference-fidelity"
         if quality_first:
@@ -2423,7 +2426,7 @@ def validate_look_dev_targets(spec: dict[str, Any], errors: list[str], warnings:
             if not is_number(pbr_threshold):
                 pbr_threshold = 0.7
             expected_channels = {"albedo", "roughness", "height", "normal", "ambient-occlusion"}
-            if not expected_channels.issubset(required_channels):
+            if not all_textureless and not expected_channels.issubset(required_channels):
                 warnings.append(
                     "quality: quality-first materialPass must require independent albedo, roughness, "
                     "height, normal, and ambient-occlusion channels"
@@ -2555,7 +2558,8 @@ def _has_repetition_or_small_parts(spec: dict[str, Any]) -> bool:
     )
 
 
-def validate_detail_inventory(spec: dict[str, Any], errors: list[str], warnings: list[str]) -> None:
+def validate_detail_inventory(spec: dict[str, Any], errors: list[str], warnings: list[str], *,
+                              appearance_warnings: list[str] | None = None) -> None:
     """Gate the detail inventory. Backward compatible: only enforced when a detailInventory
     block with a positive targetMinDetails is present (new-pipeline specs)."""
     assessment = spec.get("preSpecAssessment")
@@ -2598,7 +2602,7 @@ def validate_detail_inventory(spec: dict[str, Any], errors: list[str], warnings:
         elif kind == "fastener":
             has_fastener = True
     if has_gloss and not _has_gloss_response(spec):
-        warnings.append(
+        (warnings if appearance_warnings is None else appearance_warnings).append(
             "quality: detailInventory lists a gloss detail but no material provides low roughness or clearcoat response"
         )
     if has_fastener and not _has_repetition_or_small_parts(spec):
@@ -2797,7 +2801,10 @@ def validate_rig_admission(
                 )
 
 
-def validate_spec(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
+GEOMETRY_PASSES = frozenset({"blockout", "structural-pass", "form-refinement"})
+
+
+def validate_spec(spec: dict[str, Any], *, pass_id: str | None = None) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     for key, expected_type in REQUIRED_TOP_LEVEL.items():
@@ -2822,14 +2829,17 @@ def validate_spec(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
     validate_visual_evidence_history(spec, errors)
     build_pass_ids = validate_build_passes(spec, errors, warnings)
     validate_sculpt_pipeline(spec, build_pass_ids, errors, warnings)
-    validate_look_dev_targets(spec, errors, warnings)
+    # Collect appearance warnings separately: geometry checkpoints defer these requirements,
+    # not schema errors or geometry quality. Full validation (the default) still enforces them.
+    appearance_warnings: list[str] = []
+    validate_look_dev_targets(spec, errors, appearance_warnings)
     evidence_ids = validate_evidence(spec, errors, warnings)
-    material_ids = validate_materials(spec, errors, warnings)
-    validate_material_pipeline_contract(spec, material_ids, errors, warnings)
+    material_ids = validate_materials(spec, errors, appearance_warnings)
+    validate_material_pipeline_contract(spec, material_ids, errors, appearance_warnings)
     validate_cs2_contract(spec, errors, warnings)
     validate_pipeline_routing_contract(spec, errors)
     validate_cs2_view_dependent_environment(spec, errors)
-    validate_components(spec, material_ids, evidence_ids, errors, warnings)
+    validate_components(spec, material_ids, evidence_ids, errors, warnings, appearance_warnings=appearance_warnings)
     lod_plan = spec.get("lodPlan")
     if lod_plan is not None and not isinstance(lod_plan, list):
         errors.append("lodPlan must be an array")
@@ -2837,11 +2847,16 @@ def validate_spec(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
     if performance is not None and not isinstance(performance, dict):
         errors.append("performanceBudget must be an object")
     validate_quality_depth(spec, errors, warnings)
-    validate_detail_inventory(spec, errors, warnings)
+    validate_detail_inventory(spec, errors, warnings, appearance_warnings=appearance_warnings)
     validate_character_track(spec, errors, warnings)
     validate_rig_admission(spec, errors, warnings)
     if suitability == "pass" and spec.get("risks"):
         warnings.append("suitability is pass but risks are present; confirm they are acceptable")
+    warnings.extend(
+        "deferred-appearance: " + warning.removeprefix("quality: ")
+        if pass_id in GEOMETRY_PASSES and warning.startswith("quality:") else warning
+        for warning in appearance_warnings
+    )
     return errors, warnings
 
 
@@ -2849,6 +2864,7 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("spec", type=Path)
     parser.add_argument("--json", action="store_true", help="Print machine-readable result")
+    parser.add_argument("--pass-id", help="Scope appearance quality to a build pass; omitted means full validation")
     parser.add_argument(
         "--strict-quality",
         action="store_true",
@@ -2858,7 +2874,7 @@ def main(argv: list[str]) -> int:
 
     try:
         spec = load_spec(args.spec)
-        errors, warnings = validate_spec(spec)
+        errors, warnings = validate_spec(spec, pass_id=args.pass_id)
     except ValueError as exc:
         errors, warnings = [str(exc)], []
 
@@ -2872,6 +2888,7 @@ def main(argv: list[str]) -> int:
     ok = not errors
     result = {
         "ok": ok,
+        "validationScope": args.pass_id if args.pass_id in GEOMETRY_PASSES else "full",
         "errors": errors,
         "warnings": warnings,
         "summary": {

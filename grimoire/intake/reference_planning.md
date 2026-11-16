@@ -90,8 +90,9 @@ to the same source and hierarchy, with a plain-material comparison still availab
 Plan later surface requirements without generating textures prematurely. A shape preview
 is an intermediate result, not full material fidelity or completed pipeline evidence. Keep
 deferred work pending; never mark a required appearance gate passed or globally inapplicable
-just to reach the checkpoint. If the current tooling cannot advance without that work,
-retain its blocked status and explain the limitation. Geometry-only delivery must be scoped
+just to reach the checkpoint. Use pass-scoped strict validation for the three geometry
+passes; the generic state checklist leaves extraction/wiring/baking pending until appearance.
+Any other hard stop still applies. Geometry-only delivery must be scoped
 and labeled honestly. No texture is needed merely to finish an otherwise accepted print mesh.
 
 ## 1. Organize the supplied evidence
@@ -113,6 +114,22 @@ details. For large sets, use a contact sheet or thumbnails to select candidates,
 inspect originals for measurements and fine features. Reopen other sources when a specific
 uncertainty needs them, rather than repeatedly reviewing the entire set. One source is a
 valid working set; never invent missing views or count duplicate crops as independent evidence.
+
+### Feature-specific reference authority
+
+Keep a compact table in project notes: feature/component ID, authoritative source and crop,
+variant/assembly state, decision, uncertainty, and affected review views. One image need not
+govern every feature. For example, a drawing may control proportions, a photo the finish,
+another view an attachment, and an explicit user request an invented interior. Never blend
+different variants merely because all images were attached together.
+
+When the user changes the target, revise the affected comparison contract and preserve the
+old one as superseded. Refresh affected geometry/cameras/masks and review evidence; do not
+keep judging against an obsolete target and accumulating waivers. This does not authorize
+deleting a failure, changing a recorded score or bypassing a hard stop. Required tool fields
+must match the active target; keep unsupported per-feature metadata in a versioned sidecar.
+If a tool only supports one global reference, use it for that stated diagnostic scope and
+perform the remaining feature comparisons separately, reporting the limitation.
 
 For line art, separate outlines, dimension marks, construction lines, shading, and decorative
 strokes. A dark line is not automatically a groove; a shaded region is not automatically a
@@ -147,6 +164,26 @@ before spending effort on bevels, lettering, repetition, or other fine detail. S
 camera settings and repeatable comparison captures for later passes. Existing multi-angle
 checks still apply: with only one reference, additional rendered views test plausibility
 and continuity, not measured accuracy of unseen sides.
+
+### Repeatable measurement and comparison record
+
+For shapes that benefit from fitting, retain raw image samples/landmarks (source hash,
+crop/resize transform, pixel coordinate origin, image dimensions) separately from normalized
+coordinates and the fitted curve. Record axis direction, station positions, radii/widths,
+fit method and residuals in pixels or normalized units. Use the simplest curve that preserves
+identity-defining contour changes; do not fit noise or smooth intentional facets. A tiny
+2D fitting residual is not proof of exact 3D reconstruction.
+
+Save the comparison camera projection, pose, target, FOV or orthographic scale, render size,
+object transform and assembly state. Identify inferred camera/depth parameters separately
+from observed 2D samples and dimensioned measurements. Match framing before changing shape.
+
+Record how silhouette masks were obtained, exclusions (background, ground shadow, props,
+occluders), transparency treatment and alignment. Keep masks alongside comparison captures.
+Use the same policy for revisions being scored against the same target; when it changes,
+rerun the baseline or label scores incomparable. Never describe silhouette overlap as a
+percentage of total model accuracy. Include context views for attachments and neighboring
+parts, not only cropped close-ups of the corrected component.
 
 If a stylized drawing uses incompatible perspectives, name the conflict and choose a
 documented interpretation. Ask for clarification when that choice materially changes the

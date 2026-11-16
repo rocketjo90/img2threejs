@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "forge" / "_shared"))
 
 from workflow_state import (  # noqa: E402
     WorkflowStateError,
+    deferred_steps,
     mark_steps,
     new_state,
     set_current_pass,
@@ -141,7 +142,7 @@ class WorkflowStateTest(unittest.TestCase):
 
     def test_new_pass_archives_and_resets_pass_checklist(self):
         state = new_state("reference.png")
-        setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup"]
+        setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup" and entry["id"] not in deferred_steps(state)]
         mark_steps(state, setup_ids, status="done", evidence=["setup-evidence.json"])
         set_current_pass(state, "blockout")
         mark_steps(
@@ -162,7 +163,7 @@ class WorkflowStateTest(unittest.TestCase):
 
     def test_refine_review_resets_same_pass_checklist_once(self):
         state = new_state("reference.png")
-        setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup"]
+        setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup" and entry["id"] not in deferred_steps(state)]
         pass_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "pass"]
         mark_steps(state, setup_ids, status="done", evidence=["setup.json"])
         set_current_pass(state, "blockout")
@@ -182,7 +183,7 @@ class WorkflowStateTest(unittest.TestCase):
 
     def test_new_pass_and_refine_spec_regenerate_with_force(self):
         state = new_state("reference.png", spec="spec.json")
-        setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup"]
+        setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup" and entry["id"] not in deferred_steps(state)]
         mark_steps(state, setup_ids, status="done", evidence=["setup.json"])
         set_current_pass(state, "blockout")
         self.assertNotIn("--force", status_payload(state)["nextCommand"])
@@ -309,7 +310,7 @@ class WorkflowStateTest(unittest.TestCase):
             state_path = Path(directory) / "state.json"
             spec_path = Path(directory) / "object-sculpt-spec.json"
             state = new_state("reference.png", spec=str(spec_path))
-            setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup"]
+            setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup" and entry["id"] not in deferred_steps(state)]
             mark_steps(state, setup_ids, status="done", evidence=["setup.json"])
             state_path.write_text(json.dumps(state), encoding="utf-8")
             spec_path.write_text(
@@ -329,7 +330,7 @@ class WorkflowStateTest(unittest.TestCase):
             state_path = Path(directory) / "state.json"
             spec_path = Path(directory) / "spec.json"
             state = new_state("reference.png", spec=str(spec_path))
-            setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup"]
+            setup_ids = [entry["id"] for entry in state["checklist"] if entry["scope"] == "setup" and entry["id"] not in deferred_steps(state)]
             mark_steps(state, setup_ids, status="done", evidence=["setup.json"])
             state_path.write_text(json.dumps(state), encoding="utf-8")
             spec_path.write_text(

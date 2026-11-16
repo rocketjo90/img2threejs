@@ -17,9 +17,8 @@ artifact and is verified to its stated limits; it never replaces procedural cons
 Agent-agnostic: use the host's image reader, browser tools, project preview, or user-supplied
 screenshots wherever this document says "agent vision" or "agent browser tool".
 
-This file is the always-loaded router: it holds the order of operations and every hard rule as one
-line. The full contract behind each rule lives in the `grimoire/` or `docs/` file that rule names —
-read the named file at the moment you reach that stage, not before.
+This router gives the sequence and hard rules. Read linked `grimoire/` or `docs/` contracts
+when reaching their stage.
 
 ## Canonical shared checkout
 
@@ -43,6 +42,8 @@ Read the [fork workflow](docs/FORK_WORKFLOW.md) and
 [reference planning](grimoire/intake/reference_planning.md) before assessment. Reuse intake
 answers on follow-ups. Check cameras, proportions and part relationships against sources.
 Uncertainty describes knowledge, not visibility. Existing gates apply.
+Planning covers feature authority, measurements, cameras and masks. `next.py --state ...`
+also refreshes the generated current-status Markdown/JSON beside state.
 
 ## Profile preflight (once per run, before `forge/next.py`)
 
@@ -200,7 +201,7 @@ Full flags: `grimoire/scripts.md`. Never let a script *score* visuals — that i
    (`grimoire/glossary/3d_vocabulary.md`), never "nice/smooth/shiny". Classify every component's
    `topologyClass`/`topologyRationale` per `grimoire/intake/surface_topology.md` before picking a
    `primitive` — this is what prevents a continuous organic form from being picked as a box.
-4. When material fidelity matters and a source image exists, analyze each material's **finish** then
+4. During appearance work, when material fidelity matters and a source image exists, analyze each material's **finish** then
    extract reference PBR evidence, both per crop (verify the crop is on the part you think it is):
    - `forge/stage1_intake/analyze_texture.py <crop> --spec spec.json --material-id <id> --in-place`
      classifies the finish, extracts the gradient palette, and writes doc-grounded
@@ -216,13 +217,14 @@ Full flags: `grimoire/scripts.md`. Never let a script *score* visuals — that i
      compare visible-footprint crops (`material_comparator.py`), apply only bounded material-scoped
      corrections (`material_feedback.py`), and record the blocking result (`material_gate.py`).
 5. Validate, then strict-validate before generating code:
-   `forge/stage2_spec/validate_sculpt_spec.py object-sculpt-spec.json` then `--strict-quality`.
-   Strict blocks shallow specs (a complex object with one root, no repetition systems, no
-   local overrides, no micro groups is NOT implementation-ready even if JSON validates).
+   `forge/stage2_spec/validate_sculpt_spec.py object-sculpt-spec.json --strict-quality --pass-id <current-pass>`.
+   Geometry passes defer appearance warnings, retaining schema/geometry gates. Omit `--pass-id`
+   for full validation. See [validation scope](docs/FORK_WORKFLOW.md#stage-aware-validation-and-current-status)
+   for state deferrals and textureless evidence. Strict still blocks shallow geometry specs.
 6. **Locked build passes** — only touch the currently unlocked pass:
    `forge/stage3_build/orchestrate_passes.py status object-sculpt-spec.json`
    `forge/stage3_build/generate_threejs_factory.py object-sculpt-spec.json --out src/createObjectModel.ts`
-   The generator is fail-closed: `strict-quality` must pass before it writes any factory, and a
+   The generator is fail-closed: pass-scoped `strict-quality` must pass before it writes any factory, and a
    future `--pass-id` fails until prior passes are reviewed `continue`. If blocked, preserve the
    `BLOCKED` artifact and refine the subject-specific spec; do not substitute a generic template.
    The local state adds `--force` only for a new pass or `refine-spec`; `refine-code` edits the

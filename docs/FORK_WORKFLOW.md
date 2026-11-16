@@ -17,6 +17,9 @@ visual evidence. Object-specific procedural code is expected, not a competing wo
    distinguish assembly states, record observed/inferred/unknown features, match cameras
    and establish major proportions. Define component relationships and a refinement budget
    appropriate to the destination. Keep this compact and proportional to the subject.
+   Record authority per feature: proportions, appearance, attachments and user-designed
+   additions can have different sources. Preserve raw measurements separately from fitted
+   profiles and inferred camera/depth choices. Use one comparison protocol per active target.
 3. **Build procedural Three.js in stages.** Follow the existing state, specification,
    generation and review gates. Reuse constructors and parameters where they express the
    reference correctly. Hand refinement is part of the process; preserve its decisions in
@@ -38,6 +41,43 @@ visual evidence. Object-specific procedural code is expected, not a competing wo
    [interactive viewer and source](../grimoire/build/showcase_viewer.md). Apply Game, Blender
    or Print requirements only to requested destinations and supported exports. Keep visual
    fidelity, mesh validity, assembly fit and physical testing as separate claims.
+   The default viewer is a fully contained HTML file, tested directly with networking disabled,
+   plus editable source. A served/CDN-dependent viewer is an incomplete default delivery;
+   report the limitation instead of silently changing the requested format.
+
+## Shared source and destination adapters
+
+Keep dimensions, profile stations, coordinate frames, part IDs and attachment transforms in
+one parameter source imported by the model and any explicitly requested export adapter.
+Represent destination changes as named overrides with reasons; do not fork unrelated copies
+of the object's dimensions. Record the source revision/hash and overrides with each output.
+Inspect silhouette, seams and attachment locations after conversion; topology repair,
+decimation or remeshing must not silently move accepted features. The browser model remains
+the geometry-review artifact. This contract adds no automatic exporter or print stage.
+
+The [archived print-adapter notes](PRINT_ADAPTER_REFERENCE.md) preserve a later experiment
+for future requested printing work. They are outside the default reconstruction workflow.
+
+## Stage-aware validation and current status
+
+`validate_sculpt_spec.py --strict-quality --pass-id <current-pass>` defers appearance quality
+warnings only for blockout, structural-pass and form-refinement. Full validation remains the
+default without a pass ID. The generator uses its requested/unlocked pass automatically;
+it still rejects schema errors, shallow geometry specifications and locked future passes.
+Do not use `--allow-nonstrict` for production. Deferred requirements remain visible and are
+checked again when entering appearance. Generic state defers material extraction/wiring and
+projection baking; other profiles retain their domain admission order. Declared textureless materials need supporting
+evidence, real colors/scalar response and no contradictory texture fields; textured materials
+retain their requirements. Neutral/reference renders still judge appearance.
+
+Every `forge/next.py --state ...` refreshes `CURRENT_STATUS.md` and `current-status.json`
+beside the state file, including current pass/step, pending/deferred work, stop reason,
+latest recorded actions and the spec hash. Keep human decisions and dated history in separate
+notes and link to this generated summary rather than leaving a stale status at their top.
+These files summarize records; they do not validate screenshots, grant approval or certify
+the current source against an old review. Do not change state/history to make a summary pass.
+Keep stdout JSON parseable (`diagnose_render.py` writes status logs to stderr). Parse saved
+JSON before accepting it as evidence; never concatenate logs into an assessment file.
 
 Three.js remains this skill's construction and review path. Blender refinement or an
 img2blender implementation is an explicitly chosen, separate route, not an automatic

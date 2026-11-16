@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "_shared"))
 sys.path.insert(0, str(ROOT / "stage3_build"))
 from status_banner import emit_status
+from project_status import write_project_status
 from orchestrate_passes import current_pass, pass_acceptance, pass_order, completed_passes
 from workflow_state import (
     WorkflowStateError,
@@ -33,7 +34,8 @@ def emit_local_state(payload: dict) -> None:
         print(f"next command: {payload['nextCommand']}")
     print("pending mandatory steps:")
     for step_id in payload["pending"]:
-        print(f"- {step_id}")
+        suffix = " (deferred until appearance)" if step_id in payload.get("deferred", []) else ""
+        print(f"- {step_id}{suffix}")
 
 
 def main(argv: list[str]) -> int:
@@ -75,6 +77,7 @@ def main(argv: list[str]) -> int:
         if local_state is None:
             parser.error("spec is required unless --state points to an initialized pre-spec workflow")
         payload = status_payload(local_state)
+        write_project_status(args.state.expanduser().resolve().parent, payload)
         emit_local_state(payload)
         return 3 if payload["status"] == "stopped" else 0
 
@@ -93,6 +96,7 @@ def main(argv: list[str]) -> int:
         sync_from_spec(local_state, spec, current)
         save_state(args.state, local_state)
         payload = status_payload(local_state)
+        write_project_status(args.state.expanduser().resolve().parent, payload, spec=spec, spec_path=spec_path.expanduser())
         emit_local_state(payload)
         if payload["status"] == "stopped":
             return 3
