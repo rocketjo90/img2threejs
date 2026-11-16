@@ -45,6 +45,14 @@ Uncertainty describes knowledge, not visibility. Existing gates apply.
 Planning covers feature authority, measurements, cameras and masks. `next.py --state ...`
 also refreshes the generated current-status Markdown/JSON beside state.
 
+For every new reconstruction (including a requested fresh attempt of the same subject),
+start with `forge/new_project.py --out <new-folder> --reference <image> [--reference <image>]`.
+Follow the [fresh-generation contract](docs/FORK_WORKFLOW.md#fresh-generation-and-resumption):
+derive object geometry anew from the supplied references; reuse the generic viewer, not a
+previous object's model/spec. Corrections resume the active run. Default preview: basic
+reference colors/materials plus a Clay toggle, using the approved Object / Study shell.
+Detailed textures remain subject to the agreed appearance checkpoint.
+
 ## Profile preflight (once per run, before `forge/next.py`)
 
 Domain knowledge (CS2 skins, animated characters, emission targets) lives in plugins, not in this
@@ -83,7 +91,9 @@ hidden sides or guarantee exact geometry — say so instead of faking confidence
 ## Mandatory Local State Gate
 
 Conversation context is disposable; `.img2threejs/state.json` is the local checklist authority.
-Initialize once per reconstruction, then gate every step through it:
+The fresh-project helper initializes state once per reconstruction. For an explicitly
+chosen existing-project integration only, initialize manually as below; never reinitialize
+an existing state. Then gate every step through it:
 
 ```bash
 python3 forge/state.py init --state .img2threejs/state.json --reference <img> --profile <generic|character|installed-domain> --spec object-sculpt-spec.json

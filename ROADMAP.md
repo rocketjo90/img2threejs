@@ -12,7 +12,10 @@ can plan around.
 The [fork workflow](docs/FORK_WORKFLOW.md) preserves the current Three.js route and its
 intake, geometry-review checkpoint, viewer and destination choices. The fork now implements
 pass-scoped appearance deferral, consistent textureless material handling, generated current
-status, clean diagnostic JSON and a viewer-delivery checklist step. The items below remain
+status, clean diagnostic JSON, a viewer-delivery checklist step, a reference-only new-project
+helper and a reusable material-only Basic/Clay controller in the Object / Study shell.
+Fresh host-context isolation and automatic revision-bound visual acceptance remain unimplemented.
+The items below remain
 engineering follow-ups, separate from the upstream release roadmap.
 
 1. Bind pass acceptance to the reviewed source and evidence revision, with explicit scoped

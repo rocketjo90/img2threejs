@@ -31,8 +31,8 @@ Inspect references while waiting, but do not silently choose an unanswered inten
    process if known, and whether parts must fit, move, or separate. Do not require users
    to invent technical numbers; propose a reasoned budget after these answers. Label
    unknown constraints and identify which final checks depend on resolving them.
-4. **Appearance and review:** Offer geometry-only, geometry review before appearance, or
-   a fully finished result. Distinguish plain clay, simple colors/material properties,
+4. **Appearance and review:** Offer geometry review with basic appearance and a Clay toggle,
+   explicit clay-only output, or a fully finished result. Distinguish plain clay, simple colors/material properties,
    and image/procedural textures. Do not assume every task needs textures or that every
    user wants an approval stop. An explicit finished-output request already authorizes
    appearance work unless the user also requests an intermediate review.
@@ -77,8 +77,9 @@ contracts still govern supported conversions; these intake instructions add no e
 
 ### When geometry-first review is selected
 
-Provide a plain-material preview with proportions, shape details, and multiple views before
-costly surface work. Preserve the source, spec, cameras, assumptions, and pending tasks.
+Provide basic reference colors/scalar materials and a Clay toggle with proportions, shape
+details, and multiple views before costly surface work; honor an explicit clay-only request.
+Use the same geometry in both modes. Preserve source, spec, cameras, assumptions and pending tasks.
 If the user requested approval at this point, wait for their shape feedback before textures;
 do not treat elapsed time as approval. Resume the saved model rather than rebuilding it.
 

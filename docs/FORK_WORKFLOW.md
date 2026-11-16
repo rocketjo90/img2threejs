@@ -28,8 +28,9 @@ visual evidence. Object-specific procedural code is expected, not a competing wo
    Apply the [construction discipline](../grimoire/build/geometry_patterns.md#construction-discipline)
    for coordinate frames, curvature sampling, seam continuity, inspection transparency and
    consolidation of accepted corrections.
-4. **Review geometry in the viewer.** When geometry-first review is selected, deliver the
-   plain model with reference comparisons and relevant assembled/exposed views. Check each
+4. **Review geometry in the viewer.** When geometry-first review is selected, deliver basic
+   reference colors/materials with a Clay toggle, reference comparisons and relevant
+   assembled/exposed views. An explicit clay-only request overrides this default. Check each
    important part against both its neighbours and the reference. Respect the requested
    checkpoint; save the source, hierarchy, cameras and outstanding work for resumption.
 5. **Continue with the selected appearance.** Geometry-only, simple materials and detailed
@@ -44,6 +45,72 @@ visual evidence. Object-specific procedural code is expected, not a competing wo
    The default viewer is a fully contained HTML file, tested directly with networking disabled,
    plus editable source. A served/CDN-dependent viewer is an incomplete default delivery;
    report the limitation instead of silently changing the requested format.
+
+## Fresh generation and resumption
+
+New subjects and explicit fresh attempts start from supplied references and the current
+brief. Reuse generic constructors, reference-reading utilities and the approved viewer;
+do not read, copy, import or adapt an earlier subject's model, fitted dimensions, profiles,
+specification, assessments or acceptance records as construction input. This applies even
+to an earlier reconstruction of the same object. Carry forward the user's requirements,
+such as which reference is primary, without carrying forward old modeling conclusions.
+If the user explicitly requests adapting a previous model, label the run derived and name
+its source; never describe that result as fresh.
+
+Start from the skill root (Windows may use `py` instead of `python3`):
+
+```bash
+python3 forge/new_project.py --out <new-project-folder> --reference <primary-image> --reference <secondary-image> --profile generic
+python3 forge/next.py --state <new-project-folder>/.img2threejs/state.json
+```
+
+The helper refuses any existing destination, copies only the nominated image inputs and
+generic viewer assets, writes reference/template hashes to `run-inputs.json`, and initializes
+new state. It does not author geometry, infer reference authority or certify image content.
+Assign feature authority in the brief after inspecting the references. Record the tool's
+revision and any later added inputs alongside this manifest. Do not copy a previous project
+directory and delete selected files to simulate a clean start.
+
+This helper enforces a clean output directory, not isolation of an AI's memory or file
+access. For an independent benchmark, use a fresh host context restricted to the approved
+images, brief and generic tool; report when the host cannot enforce that restriction. A
+manifest or different filename is not proof that prior geometry was never consulted.
+
+Ordinary corrections, additional parts and appearance work resume the current run using
+`forge/next.py`. Preserve its approved geometry, source and review history. An explicit
+restart gets a new directory and state; retain the previous attempt unchanged. Import the
+actual current generated/refined factory into the viewer. Record its source path/hash in
+delivery evidence; do not run the generator merely to satisfy a checklist while displaying
+an unrelated implementation.
+
+## Appearance during geometry review
+
+Default to **Basic appearance**: source-supported flat colors, roughness, metalness and
+transparency. These are material assignments, usually requiring no image textures, UV bake,
+aging, scratches, decals or projection. They help identify parts while shape is still being
+reviewed. **Clay** uses neutral opaque materials on the same model; provide a separately
+labeled cover-hide or inspection-transparency control when needed to inspect interiors.
+Never turn an uncertain solid part invisible merely because its shape is inferred.
+
+The toggle swaps materials without rebuilding the model, moving parts, changing cameras,
+resetting assembly actions or removing details. Use the shared appearance helper and verify
+vertex/index data, hierarchy, transforms and instance counts remain unchanged. Later detailed
+finish uses the same geometry checkpoint; record any necessary geometry correction separately
+and review its affected views. Basic preview appearance does not pass the later material gate.
+
+## Fast, evidence-led iteration
+
+Within a run, cache the inspected reference index and matched cameras. Start with inexpensive
+silhouette/profile previews; increase tessellation where projected curvature needs it. Measure
+landmarks and critical interfaces before adding detail. Check each modified part with its
+neighbors and reference: profile continuity, actual contact/clearance, cavity depth and detail
+ownership. A bounding-box overlap or a good whole-image silhouette score is insufficient.
+
+Recapture affected views after a local edit; retain full assembled/orbit checks at milestones
+and final packaging. Keep each revision's captures immutable. Record visual judgments only
+after opening the actual comparison; an unseen feature is unreviewed, not passed. Do not
+prefill scores or use repeated generic acceptance notes. These are execution requirements,
+not claims of automated visual judgment or a new whole-surface fit solver.
 
 ## Shared source and destination adapters
 

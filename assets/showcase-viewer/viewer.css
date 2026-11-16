@@ -14,7 +14,7 @@ body { margin: 0; }
 .showcase {
   min-height: 100svh;
   display: grid;
-  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 2fr) minmax(240px, 0.8fr);
+  grid-template-columns: minmax(180px, 0.8fr) minmax(0, 2.4fr) minmax(230px, 0.7fr);
   grid-template-rows: auto 1fr auto;
   gap: 24px;
   padding: 30px 38px;
@@ -23,12 +23,12 @@ header, footer { grid-column: 1 / -1; display: flex; justify-content: space-betw
 header { align-items: center; }
 .wordmark { font-size: 14px; font-weight: 600; letter-spacing: 2px; }
 .tag { border: 1px solid var(--line); border-radius: 30px; padding: 9px 13px; font-size: 11px; }
-.intro { padding-top: 45px; overflow-wrap: anywhere; }
+.intro { padding-top: 55px; overflow-wrap: anywhere; }
 .eyebrow, .control-label, label { font-size: 11px; font-weight: 700; letter-spacing: 1.3px; }
 .eyebrow, .intro > p:last-child, #selection, footer { color: var(--muted); }
-h1 { font-size: clamp(30px, 3.1vw, 48px); line-height: 1.08; letter-spacing: -1.5px; font-weight: 500; }
+h1 { font-size: clamp(30px, 2.8vw, 40px); line-height: 1.08; letter-spacing: -1.5px; font-weight: 500; }
 .intro > p:last-child { font-size: 13px; line-height: 1.7; }
-#viewport { position: relative; min-width: 0; min-height: 500px; }
+#viewport { position: relative; min-width: 0; min-height: 540px; border: 0; background: transparent; }
 #viewport canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
 #viewer-status { position: absolute; inset: 40% 10% auto; text-align: center; font-size: 14px; }
 aside { align-self: center; min-width: 0; }
@@ -39,6 +39,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 button, select { font: inherit; font-size: 12px; color: var(--ink); background: #f3f2ed; border: 1px solid var(--line); border-radius: 5px; min-height: 44px; padding: 10px 12px; }
 button { cursor: pointer; }
 button:hover:enabled { background: white; }
+button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 -2px var(--accent); }
 button:disabled, fieldset:disabled button { opacity: .55; cursor: default; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 select, input[type="range"] { width: 100%; }
@@ -46,6 +47,13 @@ input[type="range"] { accent-color: var(--accent); min-height: 32px; margin: 0; 
 output { float: right; }
 #selection { font-size: 12px; line-height: 1.7; min-height: 42px; }
 footer { font-size: 11px; line-height: 1.6; flex-wrap: wrap; }
+details { margin-top: 18px; font-size: 12px; line-height: 1.6; }
+summary { cursor: pointer; color: var(--muted); min-height: 32px; }
+details img { display: block; max-width: 100%; height: auto; margin-top: 12px; }
+#inspection-content, #reference-content { overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 900px) {
   .showcase { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto auto auto; padding: 24px; gap: 20px; }

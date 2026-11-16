@@ -24,6 +24,11 @@
       <h2 id="controls-title">Explore the object.</h2>
       <fieldset disabled id="viewer-controls">
         <legend class="visually-hidden">Model controls</legend>
+        <span class="control-label" id="appearance-label">Appearance</span>
+        <div class="row" role="group" aria-labelledby="appearance-label">
+          <button type="button" data-appearance="basic" aria-pressed="true">Basic appearance</button>
+          <button type="button" data-appearance="clay" aria-pressed="false">Clay</button>
+        </div>
         <span class="control-label" id="view-label">View</span>
         <div class="row" role="group" aria-labelledby="view-label">
           <button type="button" data-view="hero">Perspective</button>
@@ -38,6 +43,14 @@
         <p id="selection" role="status">Drag to rotate · scroll or pinch to zoom.<br>Select a part to inspect it.</p>
         <button type="button" id="reset">Reset view</button>
       </fieldset>
+      <details id="reference-panel">
+        <summary>Compare reference</summary>
+        <div id="reference-content"><!-- Embed approved reference and wire matched-camera control; remove if unavailable. --></div>
+      </details>
+      <details id="inspection-panel">
+        <summary>Model information</summary>
+        <div id="inspection-content"><!-- Populate counts, confidence and actual validation results. --></div>
+      </details>
     </aside>
     <footer><span>Reference-based object study</span><span id="limitations">Add known approximation limits here.</span></footer>
   </main>

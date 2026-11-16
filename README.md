@@ -8,6 +8,9 @@
 > early camera/proportion checks, and observed versus inferred details for any 2D input.
 > The [fork workflow](docs/FORK_WORKFLOW.md) connects these additions: saved intake,
 > procedural Three.js, contextual geometry review, optional appearance, and verified delivery.
+> New reconstructions start in a fresh reference-only project with `forge/new_project.py`;
+> prior object geometry is not a starting template. Previews default to basic reference
+> materials with a Clay toggle in the original Object / Study viewer style.
 > The upstream npm commands below still install the original project.
 
 <div align="center">

@@ -4,7 +4,7 @@ This fork defaults to presenting an implemented reconstruction in an object-cent
 responsive viewer, with an offline standalone HTML copy and editable source. This is a
 fork presentation convention, inspired by the Dynamite player reconstruction; it is
 not a claim that the upstream skill or reference photos prescribed a webpage design.
-Use this during interaction and final delivery. Existing modeling and quality gates
+Use this from the first reviewable model through interaction and final delivery. Existing modeling and quality gates
 still apply. Follow explicit user requests for code-only output, integration into an
 existing application, a different design, or analysis without implementation instead.
 
@@ -13,6 +13,16 @@ existing application, a different design, or analysis without implementation ins
 - Give the model most of the space. Use a restrained neutral background, legible system
   fonts, a short object introduction, and a compact inspection panel. Adapt colors and
   copy to the object; do not reuse the player's slogans, branding, or finish choices.
+- Preserve the approved Object / Study visual language: warm seamless background, modest
+  left introduction, large central object and quiet right controls. No bordered viewport,
+  oversized full-width headline or stack of diagnostic cards in the default presentation.
+  Reuse this shell across fresh reconstructions; new geometry does not require a new UI.
+- Use restrained studio illumination and soft contact shadows with a floor sized to the
+  assembly. Fit lights/shadow bounds to the actual model. Avoid harsh long shadows, clipped
+  highlights or bloom that conceals edges. Neutral review lighting is separately controlled.
+- Keep primary controls visible; put counts, uncertainty notes and validation information
+  in `#inspection-panel`. Maintain readable text and keyboard focus rather than copying
+  the original viewer's smallest captions exactly.
 - On desktop, place introduction, model, and controls alongside one another. On narrow
   screens, put the model between the introduction and controls. Keep controls outside
   the drag surface and avoid horizontal overflow, clipped text, or a tiny canvas.
@@ -23,12 +33,13 @@ existing application, a different design, or analysis without implementation ins
 
 The reusable [HTML shell](../../assets/showcase-viewer/index.html) and
 [stylesheet](../../assets/showcase-viewer/viewer.css) provide the layout and control
-hooks. Copy them into the generated project and adapt them; they are a starter, not a
+hooks. `forge/new_project.py` copies them to `viewer/`. Adapt object copy and integration,
+preserving the visual layout unless the user requests a different one; they are a starter, not a
 working reconstruction. The disabled controls deliberately remain inert until the real
 model adapter is attached. Do not deliver the shell or a placeholder model as completed work.
 
 Use this viewer throughout the agreed review stages. At a geometry checkpoint, make the
-plain-material view, useful camera presets and part inspection available; detailed finish
+Basic appearance / Clay toggle, useful camera presets and part inspection available; detailed finish
 controls can remain absent. Later appearance work updates the same project and part IDs.
 Selection, separation, removal and detail ownership must use one assembly hierarchy. A
 separate part can share a continuous outer profile with its neighbour. An exploded view
@@ -60,6 +71,41 @@ shows the modeled parts; it does not establish missing interiors or physical ass
    Remove unused control groups. Give color swatches text alternatives and active states.
 7. Preserve keyboard focus indicators, native control labels, sufficient contrast, and
    reduced-motion preferences. Do not rely on hover or color alone to explain state.
+
+### Appearance and reference comparison
+
+Construct the model once with basic source-supported Standard/Physical materials. Import
+[`appearance.mjs`](../../assets/showcase-viewer/appearance.mjs) into the project's bundled entry:
+
+```js
+const appearance = createAppearanceController(model, {
+  buttons: document.querySelectorAll('[data-appearance]'),
+  onChange: () => render(),
+});
+// The viewer's Reset handler also calls appearance.reset().
+```
+
+Import `createAppearanceController` from the copied helper. Enable the enclosing fieldset
+after integration. The helper restores original material references exactly, handles material
+arrays and shared materials, and disposes only its own clay clones. It never constructs or
+changes geometry, cameras, selection, visibility, transforms or action state. Recreate/dispose
+the controller when replacing the model or its material set. Standard/Physical materials
+without displacement are supported; custom shader deformation needs a reviewed adapter.
+Clay is opaque and removes maps/emission/metallic response; opening covers or inspection
+transparency is a separate explicit control. Do not mutate the stored basic materials while
+the controller is active. Detailed finish is a later, separately reviewed material set.
+
+The helper's real-Three.js regression test is `assets/showcase-viewer/appearance.test.mjs`.
+Set `IMG2THREEJS_THREE_MODULE` to the absolute path of the project's `three.module.js`, then
+run `node --test assets/showcase-viewer/appearance.test.mjs` from the skill root. Without that
+dependency the test reports a skip, not a pass. Also verify both appearances in the browser
+with the project's Three.js version; the clay shader suppresses instance-color tinting.
+
+Populate `#reference-panel` with an approved embedded image/crop and a matched-camera preset;
+remove it if references cannot be distributed. Comparison uses fixed neutral light and a plain
+background, with presentation floor/shadows disabled when they contaminate silhouette review.
+Record the camera and appearance mode. Returning to presentation restores the previous camera
+and lighting. The template supplies the panel, not automatic camera solving or image matching.
 
 ## Deterministic evidence
 
@@ -101,6 +147,10 @@ Before delivery:
 - Inspect the real model at desktop and phone widths, including normal and exploded states.
 - Exercise orbit/zoom, every view, part selection, separation, reset, and every optional
   action or finish. Check that details follow parts and reset works after combined actions.
+- Switch Basic → Clay → Basic after orbiting and separating parts. Verify geometry/index
+  buffers, hierarchy, transforms and instance data are identical before/after, and basic
+  materials restore exactly. Inspect both renders; a screenshot count alone is not evidence.
+  Verify the reference panel and matched view if included, including return to presentation.
 - Check keyboard access, resize behavior, browser errors, and failed resource requests.
 - Open the final standalone file directly with networking disabled, repeat its controls,
   and confirm that the rendered result matches the served version. Check the packaged
